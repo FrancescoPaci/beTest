@@ -1,0 +1,12 @@
+root del client es.: C:\xx\xx\xx\test\src\main\client\be-digitech-test
+1) installare node.js e npm
+2) lanciare npm install copyfiles -g (questo serve solo per il punto 4b)
+3) andare nella root del client del progetto e lanciate: npm install
+4a) per lanciare il FE slegato dal BE (modalità sviluppo) sempre da root del client
+    lanciare: npm start e poi lanciare il main che si trova nella classe java TestApplication.
+    l'applicativo rispondde sulla porta http://localhost:4200/
+4b) per lanciare il FE inserito nel BE (modalità produzione) sempre da root del client
+    lanciare: npm run build e poi lanciare il main che si trova nella classe java TestApplication
+    l'applicativo rispondde sulla porta http://localhost:8080/
+N.B.) Per inviare le mail con gmail bisogna abilitare la password in due passaggi e poi creare il codice
+    per l'app di posta e metterlo come password nell'application.properties

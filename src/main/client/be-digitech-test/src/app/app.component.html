@@ -1,0 +1,16 @@
+<div class="container-fluid" [ngClass]="{'dark-site': siteColor === 'dark'}">
+  <div class="row toolbar">
+    <div class="col-12 text-center">
+      <h1>BE DIGITECH TEST - {{page}}</h1>
+    </div>
+    <div class="col-12 text-center">
+      <button class="btn btn-primary btn-sm" type="button" (click)="setDarkSite()">Cambia sfondo</button>
+      <button class="btn btn-primary btn-sm" type="button" (click)="logout()" [hidden]="hideLogout()">Logout</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 p-3">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<div id="lista-citta" class="border content-box">
+
+  <div class="row">
+    <h3 class="col-12 text-center">LISTA CITTA'</h3>
+  </div>
+
+  <div class="row mb-2 ml-4">
+    <div class="col-12">
+      <form class="form-inline">
+        <div class="form-group">
+          <input type="text" [(ngModel)]="newCity" name="newCity" class="form-control form-control-sm" id="addC" placeholder="Aggiungi città">
+          <button class="btn btn-primary btn-sm ml-2" type="button" (click)="saveNewCity()">
+            <i class="fa fa-floppy-o"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row m-2">
+    <div class="col-2 text-center" *ngFor="let city of cities; let i = index">
+      <span>{{city}}</span>
+      <br>
+      <button class="btn btn-primary btn-sm button-list" (click)="showMeteo(city)">Visualizza meteo</button>
+      <button class="btn btn-primary btn-sm button-list" (click)="deleteCity(i)"><i class="fa fa-trash"></i></button>
+    </div>
+  </div>
+
+</div>
+
+<app-meteo [city]="city"></app-meteo>
+

@@ -1,0 +1,7 @@
+.content-box {
+    padding: 10px;
+    margin: 10px
+}
+input.ng-dirty.ng-invalid{
+  border:1px solid red;
+}

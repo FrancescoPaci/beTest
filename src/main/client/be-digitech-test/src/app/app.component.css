@@ -1,0 +1,10 @@
+.dark-site {
+  background-color: black;
+  color: white;
+}
+button {
+  margin: 2px;
+}
+.container-fluid {
+    min-height:100vh;
+}

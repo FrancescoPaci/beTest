@@ -1,0 +1,58 @@
+<div class="row">
+  <div class="col-10 offset-2">
+
+    <div class="row">
+      <div class="col-4">
+        <h3>Crea Account</h3>
+      </div>
+    </div>
+
+    <form name="form" (ngSubmit)="f.form.valid && checkPassword() && register()" #f="ngForm" novalidate>
+
+      <div class="row mt-3">
+        <div class="col-4">
+          <label>Username</label>
+          <input type="text" class="form-control form-control-sm" name="username" [(ngModel)]="model.username" required />
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-4">
+          <label>Password</label>
+          <input type="password" class="form-control form-control-sm" name="password" [(ngModel)]="model.password" required />
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-4">
+          <label>Password</label>
+          <input type="password" class="form-control form-control-sm" name="password2" [(ngModel)]="model.password2" required />
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-2">
+          <button class="btn btn-primary" [disabled]="f.form.invalid">Crea Account</button>
+        </div>
+
+        <div class="col-2">
+          <button class="btn btn-primary pull-right" (click)="goToLogin()">
+            Torna alla Login
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+    <div class="row mt-3">
+      <div class="col-4">
+        <div class="alert alert-danger" [hidden]="!errMsg">
+          <strong>{{errMsg}}</strong>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+

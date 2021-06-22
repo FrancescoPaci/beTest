@@ -1,0 +1,15 @@
+<div id="meteo-chart">
+  <div class="row" *ngIf="data.length > 0">
+    <div class="col-12">
+      <google-chart #chart
+                    [title]="title"
+                    [type]="type"
+                    [data]="data"
+                    [columns]="columns"
+                    [options]="options"
+                    [width]="width"
+                    [height]="height">
+      </google-chart>
+    </div>
+  </div>
+</div>

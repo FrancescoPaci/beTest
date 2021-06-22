@@ -1,0 +1,46 @@
+<div id="meteo" class="border content-box" [hidden]="!city">
+
+  <div class="row text-center">
+    <h3 class="col-12">PREVISIONI METEO {{city}}</h3>
+    <div class="col-12" [hidden]="!meteoErr">Si è verificato un errore</div>
+  </div>
+
+  <div id="meteo-chart" [hidden]="!datiGraph" class="m-2">
+    <div class="row">
+      <div class="col-12 text-center mb-2">
+        <button class="btn btn-primary btn-sm" type="button" (click)="datiGraph = null">
+          Nascondi grafico
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <app-meteo-chart [datiChart]="datiGraph"></app-meteo-chart>
+      </div>
+    </div>
+  </div>
+
+  <div id="meteo-previsioni">
+    <div class="row m-3" *ngIf="!meteoErr">
+      <div class="col-1"></div>
+      <div *ngFor="let days of meteo" class="col-2">
+        <h6 class="d-inline">{{getDayOfMeteo(days[0].dt_txt)}}</h6>
+        <button class="btn btn-primary btn-sm pull-right" (click)="showChart(days)" tooltip="clicca per vedere il grafico"><i class="fa fa-line-chart"></i></button>
+        <div *ngFor="let day of days" style="margin-top: 20px" class="row">
+          <div class="col-3">
+            <h6>{{getTimeOfMeteo(day.dt_txt)}}:</h6>
+          </div>
+          <div class="col-9">
+            <div>
+              <img src="{{getIconUrl(day.weather[0].icon)}}" alt="Weather icon">
+              <div>{{day.weather[0].description}}</div>
+              <div>umidità: {{day.main.humidity}}%</div>
+              <div>temperatura: {{day.main.temp}}°</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
