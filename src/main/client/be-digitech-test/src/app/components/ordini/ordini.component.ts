@@ -162,15 +162,29 @@ export class OrdiniComponent implements OnInit {
   createExcel() {
     this.spinner.show()
     setTimeout(() => {
-      let excelData = {
-        title: 'AAAAAAAAAAAAAAAAAAAAAA',
-        data: [['colonna A','colonna b','colonna c']],
-        headers: ['colonna A','colonnaB','colonnaC']
+      let excelData = []
+      for(var i = 0; i < this.orders.length; i++){
+        let order = this.orders[i]
+        let orderData = [order.customerName, order.employName, order.orderDate, order.shipCity, order.shipAddress,
+                  order.shipPostalCode, order.shipCountry, order.shipper.companyName + " " + order.shipper.phone]
+        let products = []
+        for(var j = 0; j < order.products.length; j++){
+          let product = order.products[j]
+          products.push(product.quantity + " " + product.name)
+        }
+        orderData.push(products.join(", "))
+        excelData.push(orderData)
       }
-      this.excelService.generateExcel(this.excelService.createExcel(excelData), 'bbbbbbbbbbbbbbbb').then(rs => {
+      let excelParams = {
+        title: 'Ordini',
+        data: excelData,
+        headers: ['Customer name', 'Employ name', 'Order date', 'Ship city', 'Ship address',
+                  'Ship postal code', 'Ship country', 'Shipping company', 'Products']
+      }
+      this.excelService.generateExcel(this.excelService.createExcel(excelParams), 'Ordini').then(rs => {
         this.spinner.hide()
       })
-    }, 10000)
+    }, 1000)
   }
 
 }
