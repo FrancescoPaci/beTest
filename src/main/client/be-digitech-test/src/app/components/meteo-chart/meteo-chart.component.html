@@ -1,6 +1,7 @@
 <div id="meteo-chart">
   <div class="row" *ngIf="data.length > 0">
     <div class="col-12">
+      <ngx-spinner size="medium" bdColor="rgba(0,0,0,0)" color="#000000" type="line-spin-fade" [fullScreen]="false" name="meteo-chart"></ngx-spinner>
       <google-chart #chart
                     [title]="title"
                     [type]="type"
