@@ -3,6 +3,8 @@ import { HttpService } from '../../services/http.service'
 import { FormBuilder, Validators } from '@angular/forms'
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { AlertModalComponent } from '../alert-modal/alert-modal.component';
+import { ExcelService } from '../../services/excel.service'
+import { NgxSpinnerService } from "ngx-spinner"
 
 @Component({
   selector: 'app-ordini',
@@ -11,7 +13,8 @@ import { AlertModalComponent } from '../alert-modal/alert-modal.component';
 })
 export class OrdiniComponent implements OnInit {
 
-  constructor(private httpService: HttpService, private formBuilder: FormBuilder, private modalService: BsModalService) {
+  constructor(private httpService: HttpService, private formBuilder: FormBuilder, private modalService: BsModalService,
+              public excelService: ExcelService, private spinner: NgxSpinnerService) {
     setInterval(() => {
       this.siteColor = localStorage.getItem("siteColor")
     }, 10)
@@ -154,6 +157,20 @@ export class OrdiniComponent implements OnInit {
       text: text
     }
     this.modalService.show(AlertModalComponent, {initialState})
+  }
+
+  createExcel() {
+    this.spinner.show()
+    setTimeout(() => {
+      let excelData = {
+        title: 'AAAAAAAAAAAAAAAAAAAAAA',
+        data: [['colonna A','colonna b','colonna c']],
+        headers: ['colonna A','colonnaB','colonnaC']
+      }
+      this.excelService.generateExcel(this.excelService.createExcel(excelData), 'bbbbbbbbbbbbbbbb').then(rs => {
+        this.spinner.hide()
+      })
+    }, 10000)
   }
 
 }
