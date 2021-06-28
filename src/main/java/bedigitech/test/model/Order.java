@@ -14,7 +14,6 @@ public class Order {
 
     private long id;
     private String customerName;
-    private String employName;
     private Date orderDate;
     private String shipCity;
     private String shipCountry;

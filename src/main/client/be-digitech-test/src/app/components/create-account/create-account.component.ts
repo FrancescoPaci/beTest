@@ -30,7 +30,7 @@ export class CreateAccountComponent implements OnInit {
 
     register() {
       if(this.model.username && this.model.password){
-        var params = '?user='+this.model.username+'&psw='+this.model.password
+        var params = '?username='+this.model.username+'&psw='+this.model.password
         this.httpService.callGet('createAccount'+params).subscribe(
           data => {
             this.router.navigate(['loginPage'])

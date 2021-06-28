@@ -22,7 +22,7 @@ public class UserController implements BasicController  {
     }
 
     @GetMapping("/createAccount")
-    public void insertUser(@RequestParam(value = "user") String user,
+    public void insertUser(@RequestParam(value = "username") String user,
                            @RequestParam(value = "psw") String psw) {
         userRepository.insertUser(user, psw);
     }

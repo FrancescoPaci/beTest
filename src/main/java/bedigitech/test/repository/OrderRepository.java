@@ -23,34 +23,32 @@ public class OrderRepository {
 
     public List<Order> findOrdersByRange(Integer start, Integer end) {
         return jdbcTemplate.query("SELECT * FROM (\n" +
-                "SELECT OrderID,OrderDate,ShipCity,ShipCountry,ShipAddress,ShipPostalCode,\n" +
-                "e.LastName,e.FirstName,c.ContactName,s.CompanyName,s.Phone,s.ShipperID,\n" +
-                "ROW_NUMBER() OVER (ORDER BY OrderID) AS 'RowNumber'\n" +
+                "SELECT o.id as OrderID, o.OrderDate, o.ShipCity, o.ShipCountry, o.ShipAddress, o.ShipPostalCode,\n" +
+                "c.Name as CustomerName,s.name as shipperName,s.phone,s.id as ShipperID,\n" +
+                "ROW_NUMBER() OVER (ORDER BY o.id) AS 'RowNumber'\n" +
                 "FROM Orders o\n" +
-                "INNER JOIN Customers c on o.CustomerID = c.CustomerID\n" +
-                "INNER JOIN Employees e on o.EmployeeID = e.EmployeeID\n" +
-                "INNER JOIN Shippers s on o.ShipVia = s.ShipperID\n" +
+                "INNER JOIN Customers c on o.CustomerID = c.id\n" +
+                "INNER JOIN Shippers s on o.ShipperID = s.id\n" +
                 ") as x WHERE RowNumber BETWEEN "+start+" AND " + end, new OrderRowMapper());
     }
 
     public Order getSingleOrder(long orderId) {
-        return jdbcTemplate.queryForObject("SELECT OrderID,OrderDate,ShipCity,ShipCountry,ShipAddress,ShipPostalCode,\n" +
-                "e.LastName,e.FirstName,c.ContactName,s.CompanyName,s.Phone,s.ShipperID,\n" +
-                "ROW_NUMBER() OVER (ORDER BY OrderID) AS 'RowNumber'\n" +
+        return jdbcTemplate.queryForObject("SELECT o.id as OrderID, o.OrderDate, o. ShipCity, o.ShipCountry,\n" +
+                "o.ShipAddress, o.ShipPostalCode, c.Name as CustomerName,s.name as shipperName, s.Phone, s.id as ShipperID,\n" +
+                "ROW_NUMBER() OVER (ORDER BY o.id) AS 'RowNumber'\n" +
                 "FROM Orders o\n" +
-                "INNER JOIN Customers c on o.CustomerID = c.CustomerID\n" +
-                "INNER JOIN Employees e on o.EmployeeID = e.EmployeeID\n" +
-                "INNER JOIN Shippers s on o.ShipVia = s.ShipperID\n" +
-                "WHERE OrderID = " + orderId, new OrderRowMapper());
+                "INNER JOIN Customers c on o.CustomerID = c.id\n" +
+                "INNER JOIN Shippers s on o.ShipperId = s.id\n" +
+                "WHERE o.id = " + orderId, new OrderRowMapper());
     }
 
     public List<Product> getProducts(long orderId){
-        return jdbcTemplate.query("SELECT p.ProductID,p.ProductName,od.Quantity\n" +
-                "FROM [Order Details] od\n" +
-                "INNER JOIN [Products] p on od.ProductID = p.ProductID\n" +
-                "WHERE od.[OrderID] =" + orderId, (rs, rowNum) ->
-                new Product(rs.getLong("ProductID"),
-                        rs.getString("ProductName"),
+        return jdbcTemplate.query("SELECT p.id, p.name, od.Quantity\n" +
+                "FROM Orders_Details od\n" +
+                "INNER JOIN Products p on od.ProductID = p.id\n" +
+                "WHERE od.OrderID =" + orderId, (rs, rowNum) ->
+                new Product(rs.getLong("id"),
+                        rs.getString("name"),
                         rs.getInt("Quantity")));
     }
 
@@ -64,24 +62,27 @@ public class OrderRepository {
         Object[] args = new Object[] {order.getOrderDate(), order.getShipCity(), order.getShipAddress(),
                 order.getShipPostalCode(), order.getShipCountry(), order.getShipper().getId(), order.getId()};
         String query = "UPDATE Orders SET OrderDate = ?,ShipCity = ?,ShipAddress = ?,ShipPostalCode = ?,\n" +
-                "ShipCountry = ?,ShipVia = ? WHERE OrderID = ?";
+                "ShipCountry = ?,ShipperId = ? WHERE id = ?";
         jdbcTemplate.update(query, args);
     }
 
     public void updateProduct(Order order){
         for (Product product: order.getProducts()) {
             Object[] args = new Object[] {product.getQuantity(), order.getId(), product.getId()};
-            String query = "UPDATE [Order Details] SET Quantity = ?\n" +
+            String query = "UPDATE Orders_Details SET Quantity = ?\n" +
                     "WHERE OrderID = ? AND ProductID = ?";
+            jdbcTemplate.update(query, args);
+            args = new Object[] {product.getName(), product.getId()};
+            query = "UPDATE Products SET name = ? WHERE id = ?";
             jdbcTemplate.update(query, args);
         }
     }
 
     public List<Shippers> getShippers(){
-        return jdbcTemplate.query("SELECT ShipperID,CompanyName,Phone FROM Shippers", (rs, rowNum) ->
-                new Shippers(rs.getLong("ShipperID"),
-                        rs.getString("CompanyName"),
-                        rs.getString("Phone")));
+        return jdbcTemplate.query("SELECT id, name, phone FROM Shippers", (rs, rowNum) ->
+                new Shippers(rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getString("phone")));
     }
 
 }

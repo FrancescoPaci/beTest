@@ -10,13 +10,13 @@ public class UserRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public String findUser(String user, String psw) {
-        return jdbcTemplate.queryForObject("SELECT ROLE FROM Users where [User] = '"+user+"' " +
-                "AND [Password] = '"+psw+"'", String.class);
+    public String findUser(String username, String psw) {
+        return jdbcTemplate.queryForObject("SELECT ROLE FROM Users where username = '"+username+"' " +
+                "AND Password = '"+psw+"'", String.class);
     }
 
-    public void insertUser(String user, String psw) {
-        jdbcTemplate.update("INSERT INTO Users ([User],[Password],[Role])\n" +
-                "VALUES ('"+user+"','"+psw+"','USER')");
+    public void insertUser(String username, String psw) {
+        jdbcTemplate.update("INSERT INTO Users (username, Password, Role)\n" +
+                "VALUES ('"+username+"','"+psw+"','USER')");
     }
 }

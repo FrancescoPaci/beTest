@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class Shippers {
 
     private long id;
-    private String companyName;
+    private String name;
     private String phone;
 
 }

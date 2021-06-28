@@ -127,7 +127,6 @@ export class OrdiniComponent implements OnInit {
       orderDetails: this.formBuilder.array(
         this.orders.map(x => this.formBuilder.group({
           customerName: [x.customerName],
-          employName: [x.employName],
           id: [x.id],
           orderDate: [x.orderDate, [Validators.required, Validators.pattern(this.datePattern)]],
           shipCity: [x.shipCity, [Validators.required]],
@@ -165,7 +164,7 @@ export class OrdiniComponent implements OnInit {
       let excelData = []
       for(var i = 0; i < this.orders.length; i++){
         let order = this.orders[i]
-        let orderData = [order.customerName, order.employName, order.orderDate, order.shipCity, order.shipAddress,
+        let orderData = [order.customerName, order.orderDate, order.shipCity, order.shipAddress,
                   order.shipPostalCode, order.shipCountry, order.shipper.companyName + " " + order.shipper.phone]
         let products = []
         for(var j = 0; j < order.products.length; j++){
@@ -178,7 +177,7 @@ export class OrdiniComponent implements OnInit {
       let excelParams = {
         title: 'Ordini',
         data: excelData,
-        headers: ['Customer name', 'Employ name', 'Order date', 'Ship city', 'Ship address',
+        headers: ['Customer name', 'Order date', 'Ship city', 'Ship address',
                   'Ship postal code', 'Ship country', 'Shipping company', 'Products']
       }
       this.excelService.generateExcel(this.excelService.createExcel(excelParams), 'Ordini').then(rs => {
