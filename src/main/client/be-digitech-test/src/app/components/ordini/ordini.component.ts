@@ -14,7 +14,7 @@ import { NgxSpinnerService } from "ngx-spinner"
 export class OrdiniComponent implements OnInit {
 
   constructor(private httpService: HttpService, private formBuilder: FormBuilder, private modalService: BsModalService,
-              public excelService: ExcelService, private spinner: NgxSpinnerService) {
+    public excelService: ExcelService, private spinner: NgxSpinnerService) {
     setInterval(() => {
       this.siteColor = localStorage.getItem("siteColor")
     }, 10)
@@ -30,8 +30,8 @@ export class OrdiniComponent implements OnInit {
   ordersFiltered: any = []
   cities: any = []
   shippers: any = []
-  ordersColumns: any = ['customerName','orderDate','shipCity','shipAddress','shipPostalCode','shipCountry']
-  orderObj = {customerName: '', orderDate: '', shipCity: '', shipAddress: '', shipPostalCode: '', shipCountry: ''}
+  filterColumns: any = ['customerName', 'orderDate', 'shipCity', 'shipAddress', 'shipPostalCode', 'shipCountry', 'shipper']
+  orderObj = { customerName: '', orderDate: '', shipCity: '', shipAddress: '', shipPostalCode: '', shipCountry: '', shipper: '' }
   start = 0
   end = 10
 
@@ -44,8 +44,8 @@ export class OrdiniComponent implements OnInit {
   itemsPerPage = 10
 
   role = localStorage.getItem('userRole')
-  datePattern=/^[\d]{4}-[\d]{2}-[\d]{2}$/
-  numberPattern=/^[\d]*$/
+  datePattern = /^[\d]{4}-[\d]{2}-[\d]{2}$/
+  numberPattern = /^[\d]*$/
 
   ngOnInit(): void {
     this.getOrders()
@@ -53,27 +53,28 @@ export class OrdiniComponent implements OnInit {
     this.getShippers()
   }
 
-  applyFilters(){
-    let filter = {
-       customerName : this.ordersForm.controls.orderFilters.controls['customerName'].value,
-       orderDate : this.ordersForm.controls.orderFilters.controls['orderDate'].value,
-       shipCity : this.ordersForm.controls.orderFilters.controls['shipCity'].value,
-       shipAddress : this.ordersForm.controls.orderFilters.controls['shipAddress'].value,
-       shipPostalCode : this.ordersForm.controls.orderFilters.controls['shipPostalCode'].value,
-       shipCountry : this.ordersForm.controls.orderFilters.controls['shipCountry'].value
+  applyFilters() {
+    let filters = {}
+    for (var i = 0; i < this.filterColumns.length; i++) {
+      filters[this.filterColumns[i]] = this.ordersForm.controls.orderFilters.controls[this.filterColumns[i]].value
     }
-    let filtered = this.orders.filter(function(o){
-      return ((filter.customerName && o.customerName.toLowerCase().indexOf(filter.customerName.toLowerCase()) >= 0) ||
-             (filter.orderDate && o.orderDate.toLowerCase().indexOf(filter.orderDate.toLowerCase()) >= 0) ||
-             (filter.shipCity && o.shipCity.toLowerCase().indexOf(filter.shipCity.toLowerCase()) >= 0) ||
-             (filter.shipAddress && o.shipAddress.toLowerCase().indexOf(filter.shipAddress.toLowerCase()) >= 0) ||
-             (filter.shipPostalCode && o.shipPostalCode.toLowerCase().indexOf(filter.shipPostalCode.toLowerCase()) >= 0) ||
-             (filter.shipCountry && o.shipCountry.toLowerCase().indexOf(filter.shipCountry.toLowerCase()) >= 0))
+    this.ordersFiltered = this.orders.filter(function (o) {
+      for (var key in filters) {
+        if (filters[key] && o[key]) {
+          if (key === 'shipper') {
+            if (o[key].name.toLowerCase().indexOf(filters[key].toLowerCase()) === -1) {
+              return false
+            }
+          } else if (o[key].toLowerCase().indexOf(filters[key].toLowerCase()) === -1) {
+            return false
+          }
+        }
+      }
+      return true
     })
-    this.ordersFiltered = filtered.length > 0 ? filtered : this.orders
   }
 
-  resetFilters(){
+  resetFilters() {
     this.ordersForm.controls.orderFilters.setValue(this.orderObj)
     this.ordersFiltered = this.orders
   }
@@ -85,74 +86,74 @@ export class OrdiniComponent implements OnInit {
     this.getOrders()
   }
 
-  getOrders(){
-    let params = '?start='+this.start+'&end='+this.end
-    this.httpService.callGet('ordersByRange'+params).subscribe(
+  getOrders() {
+    let params = '?start=' + this.start + '&end=' + this.end
+    this.httpService.callGet('ordersByRange' + params).subscribe(
       data => {
         this.orders = data
         this.ordersFiltered = data
         this.createForm()
         let cities = []
-        for(let i = 0; i < this.orders.length; i++){
-          if(!cities.includes(this.orders[i].shipCity)){
+        for (let i = 0; i < this.orders.length; i++) {
+          if (!cities.includes(this.orders[i].shipCity)) {
             cities.push(this.orders[i].shipCity)
           }
         }
         this.cities = cities
       },
-      error => {},
-      () => {}
+      error => { },
+      () => { }
     )
   }
 
-  getTotalOrders(){
+  getTotalOrders() {
     this.httpService.callGet('ordersCount').subscribe(
       data => {
         this.totalItems = data as number
       },
-      error => {},
-      () => {}
+      error => { },
+      () => { }
     )
   }
 
-  getShippers(){
+  getShippers() {
     this.httpService.callGet('getShippers').subscribe(
       data => {
         this.shippers = data
       },
-      error => {},
-      () => {}
+      error => { },
+      () => { }
     )
   }
 
-  modifyOrder(order){
+  modifyOrder(order) {
     order.inModifica = true
   }
 
-  cancelModOrder(index){
+  cancelModOrder(index) {
     delete this.orders[index].inModifica
     this.ordersForm.controls.orderDetails.controls[index].setValue(JSON.parse(JSON.stringify(this.orders[index])))
   }
 
-  saveOrder(index){
+  saveOrder(index) {
     let order = this.ordersForm.controls.orderDetails.controls[index].value
     this.httpService.callPost("updateOrder", order).subscribe(
       data => {
-          this.ordersFiltered[index] = data
-          this.ordersForm.controls.orderDetails.controls[index].setValue(data)
+        this.ordersFiltered[index] = data
+        this.ordersForm.controls.orderDetails.controls[index].setValue(data)
       },
       error => {
         this.openModal('Errore', "La modifica dell'ordine non è riuscita")
       },
-      () => {}
+      () => { }
     )
   }
 
   compareShipper(a, b) {
-     return a && b && a.id === b.id;
+    return a && b && a.id === b.id;
   }
 
-  createForm(){
+  createForm() {
     this.ordersForm.controls.orderDetails = this.formBuilder.array(
       this.orders.map(x => this.formBuilder.group({
         customerName: [x.customerName],
@@ -173,29 +174,29 @@ export class OrdiniComponent implements OnInit {
     )
   }
 
-  formInvalid(index){
-     return this.ordersForm.controls.orderDetails.controls[index].pristine ||
-     this.ordersForm.controls.orderDetails.controls[index].status === 'INVALID'
+  formInvalid(index) {
+    return this.ordersForm.controls.orderDetails.controls[index].pristine ||
+      this.ordersForm.controls.orderDetails.controls[index].status === 'INVALID'
   }
 
-  openModal(title, text){
+  openModal(title, text) {
     const initialState = {
       title: title,
       text: text
     }
-    this.modalService.show(AlertModalComponent, {initialState})
+    this.modalService.show(AlertModalComponent, { initialState })
   }
 
   createExcel() {
     this.spinner.show()
     setTimeout(() => {
       let excelData = []
-      for(var i = 0; i < this.orders.length; i++){
+      for (var i = 0; i < this.orders.length; i++) {
         let order = this.orders[i]
         let orderData = [order.customerName, order.orderDate, order.shipCity, order.shipAddress,
-                  order.shipPostalCode, order.shipCountry, order.shipper.companyName + " " + order.shipper.phone]
+        order.shipPostalCode, order.shipCountry, order.shipper.companyName + " " + order.shipper.phone]
         let products = []
-        for(var j = 0; j < order.products.length; j++){
+        for (var j = 0; j < order.products.length; j++) {
           let product = order.products[j]
           products.push(product.quantity + " " + product.name)
         }
@@ -206,7 +207,7 @@ export class OrdiniComponent implements OnInit {
         title: 'Ordini',
         data: excelData,
         headers: ['Customer name', 'Order date', 'Ship city', 'Ship address',
-                  'Ship postal code', 'Ship country', 'Shipping company', 'Products']
+          'Ship postal code', 'Ship country', 'Shipping company', 'Products']
       }
       this.excelService.generateExcel(this.excelService.createExcel(excelParams), 'Ordini').then(rs => {
         this.spinner.hide()

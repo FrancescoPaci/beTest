@@ -27,7 +27,7 @@
                 <i class="fa fa-refresh"></i>
               </button>
             </th>
-            <th *ngFor="let column of ordersColumns; let i = index">
+            <th *ngFor="let column of filterColumns; let i = index">
               <input type="text" formControlName="{{column}}" (keyup)="applyFilters()" class="form-control form-control-sm">
             </th>
             <th></th>
