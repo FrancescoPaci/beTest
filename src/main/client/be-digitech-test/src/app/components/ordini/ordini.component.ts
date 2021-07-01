@@ -20,14 +20,18 @@ export class OrdiniComponent implements OnInit {
     }, 10)
 
     this.ordersForm = this.formBuilder.group({
-      orderDetails: this.formBuilder.array([])
+      orderDetails: this.formBuilder.array([]),
+      orderFilters: this.formBuilder.group(this.orderObj)
     })
   }
 
   ordersForm
   orders: any = []
+  ordersFiltered
   cities: any = []
   shippers: any = []
+  ordersColumns: any = ['customerName','orderDate','shipCity','shipAddress','shipPostalCode','shipCountry']
+  orderObj = {customerName: '', orderDate: '', shipCity: '', shipAddress: '', shipPostalCode: '', shipCountry: ''}
   start = 0
   end = 10
 
@@ -47,6 +51,35 @@ export class OrdiniComponent implements OnInit {
     this.getOrders()
     this.getTotalOrders()
     this.getShippers()
+  }
+
+  applyFilters(){
+    let filter = {
+       customerName : this.ordersForm.controls.orderFilters.controls['customerName'].value,
+       orderDate : this.ordersForm.controls.orderFilters.controls['orderDate'].value,
+       shipCity : this.ordersForm.controls.orderFilters.controls['shipCity'].value,
+       shipAddress : this.ordersForm.controls.orderFilters.controls['shipAddress'].value,
+       shipPostalCode : this.ordersForm.controls.orderFilters.controls['shipPostalCode'].value,
+       shipCountry : this.ordersForm.controls.orderFilters.controls['shipCountry'].value
+    }
+    let filtered = this.orders.filter(function(o){
+      return ((filter.customerName && o.customerName.indexOf(filter.customerName) >= 0) ||
+             (filter.orderDate && o.orderDate.indexOf(filter.orderDate) >= 0) ||
+             (filter.shipCity && o.shipCity.indexOf(filter.shipCity) >= 0) ||
+             (filter.shipAddress && o.shipAddress.indexOf(filter.shipAddress) >= 0) ||
+             (filter.shipPostalCode && o.shipPostalCode.indexOf(filter.shipPostalCode) >= 0) ||
+             (filter.shipCountry && o.shipCountry.indexOf(filter.shipCountry) >= 0))
+    })
+    if(filtered.length > 0){
+      this.ordersFiltered = filtered
+    } else {
+      this.ordersFiltered = null
+    }
+  }
+
+  resetFilters(){
+    this.ordersForm.controls.orderFilters.setValue(this.orderObj)
+    this.applyFilters()
   }
 
   setPageActive(event: any, setData): void {
@@ -124,6 +157,7 @@ export class OrdiniComponent implements OnInit {
 
   createForm(){
     this.ordersForm = this.formBuilder.group({
+      orderFilters: this.formBuilder.group(this.orderObj),
       orderDetails: this.formBuilder.array(
         this.orders.map(x => this.formBuilder.group({
           customerName: [x.customerName],

@@ -21,6 +21,17 @@
       <form [formGroup]="ordersForm">
         <table class="table table-striped table-bordered table-hover table-sm" [ngClass]="{'table-dark': siteColor === 'dark'}">
           <thead>
+          <tr formGroupName="orderFilters">
+            <th>
+              <button class="btn btn-primary btn-sm" type="submit" (click)="resetFilters()" tooltip="reset filters">
+                <i class="fa fa-refresh"></i>
+              </button>
+            </th>
+            <th *ngFor="let column of ordersColumns; let i = index">
+              <input type="text" formControlName="{{column}}" (keyup)="applyFilters()" class="form-control form-control-sm">
+            </th>
+            <th></th>
+          </tr>
           <tr>
             <th>#</th>
             <th>Customer name</th>
@@ -35,7 +46,7 @@
           </tr>
           </thead>
           <tbody formArrayName="orderDetails">
-          <tr *ngFor="let order of orders; let i = index">
+          <tr *ngFor="let order of ordersFiltered || orders; let i = index">
             <ng-container *ngIf="!order.inModifica">
               <td>{{(i+1) + ((currentPage -1) * itemsPerPage)}}</td>
               <td>{{order.customerName}}</td>
