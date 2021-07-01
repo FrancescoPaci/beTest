@@ -46,7 +46,7 @@
           </tr>
           </thead>
           <tbody formArrayName="orderDetails">
-          <tr *ngFor="let order of ordersFiltered || orders; let i = index">
+          <tr *ngFor="let order of ordersFiltered; let i = index">
             <ng-container *ngIf="!order.inModifica">
               <td>{{(i+1) + ((currentPage -1) * itemsPerPage)}}</td>
               <td>{{order.customerName}}</td>

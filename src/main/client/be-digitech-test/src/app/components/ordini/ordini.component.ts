@@ -27,7 +27,7 @@ export class OrdiniComponent implements OnInit {
 
   ordersForm
   orders: any = []
-  ordersFiltered
+  ordersFiltered: any = []
   cities: any = []
   shippers: any = []
   ordersColumns: any = ['customerName','orderDate','shipCity','shipAddress','shipPostalCode','shipCountry']
@@ -63,23 +63,19 @@ export class OrdiniComponent implements OnInit {
        shipCountry : this.ordersForm.controls.orderFilters.controls['shipCountry'].value
     }
     let filtered = this.orders.filter(function(o){
-      return ((filter.customerName && o.customerName.indexOf(filter.customerName) >= 0) ||
-             (filter.orderDate && o.orderDate.indexOf(filter.orderDate) >= 0) ||
-             (filter.shipCity && o.shipCity.indexOf(filter.shipCity) >= 0) ||
-             (filter.shipAddress && o.shipAddress.indexOf(filter.shipAddress) >= 0) ||
-             (filter.shipPostalCode && o.shipPostalCode.indexOf(filter.shipPostalCode) >= 0) ||
-             (filter.shipCountry && o.shipCountry.indexOf(filter.shipCountry) >= 0))
+      return ((filter.customerName && o.customerName.toLowerCase().indexOf(filter.customerName.toLowerCase()) >= 0) ||
+             (filter.orderDate && o.orderDate.toLowerCase().indexOf(filter.orderDate.toLowerCase()) >= 0) ||
+             (filter.shipCity && o.shipCity.toLowerCase().indexOf(filter.shipCity.toLowerCase()) >= 0) ||
+             (filter.shipAddress && o.shipAddress.toLowerCase().indexOf(filter.shipAddress.toLowerCase()) >= 0) ||
+             (filter.shipPostalCode && o.shipPostalCode.toLowerCase().indexOf(filter.shipPostalCode.toLowerCase()) >= 0) ||
+             (filter.shipCountry && o.shipCountry.toLowerCase().indexOf(filter.shipCountry.toLowerCase()) >= 0))
     })
-    if(filtered.length > 0){
-      this.ordersFiltered = filtered
-    } else {
-      this.ordersFiltered = null
-    }
+    this.ordersFiltered = filtered.length > 0 ? filtered : this.orders
   }
 
   resetFilters(){
     this.ordersForm.controls.orderFilters.setValue(this.orderObj)
-    this.applyFilters()
+    this.ordersFiltered = this.orders
   }
 
   setPageActive(event: any, setData): void {
@@ -94,6 +90,7 @@ export class OrdiniComponent implements OnInit {
     this.httpService.callGet('ordersByRange'+params).subscribe(
       data => {
         this.orders = data
+        this.ordersFiltered = data
         this.createForm()
         let cities = []
         for(let i = 0; i < this.orders.length; i++){
@@ -141,7 +138,7 @@ export class OrdiniComponent implements OnInit {
     let order = this.ordersForm.controls.orderDetails.controls[index].value
     this.httpService.callPost("updateOrder", order).subscribe(
       data => {
-          this.orders[index] = data
+          this.ordersFiltered[index] = data
           this.ordersForm.controls.orderDetails.controls[index].setValue(data)
       },
       error => {
@@ -156,27 +153,24 @@ export class OrdiniComponent implements OnInit {
   }
 
   createForm(){
-    this.ordersForm = this.formBuilder.group({
-      orderFilters: this.formBuilder.group(this.orderObj),
-      orderDetails: this.formBuilder.array(
-        this.orders.map(x => this.formBuilder.group({
-          customerName: [x.customerName],
-          id: [x.id],
-          orderDate: [x.orderDate, [Validators.required, Validators.pattern(this.datePattern)]],
-          shipCity: [x.shipCity, [Validators.required]],
-          shipAddress: [x.shipAddress, [Validators.required]],
-          shipPostalCode: [x.shipPostalCode, [Validators.required]],
-          shipCountry: [x.shipCountry, [Validators.required]],
-          shipper: [x.shipper, [Validators.required]],
-          products: this.formBuilder.array(
-            x.products.map(y => this.formBuilder.group({
-              quantity: [y.quantity, [Validators.required, Validators.pattern(this.numberPattern)]],
-              name: [y.name],
-              id: [y.id]
+    this.ordersForm.controls.orderDetails = this.formBuilder.array(
+      this.orders.map(x => this.formBuilder.group({
+        customerName: [x.customerName],
+        id: [x.id],
+        orderDate: [x.orderDate, [Validators.required, Validators.pattern(this.datePattern)]],
+        shipCity: [x.shipCity, [Validators.required]],
+        shipAddress: [x.shipAddress, [Validators.required]],
+        shipPostalCode: [x.shipPostalCode, [Validators.required]],
+        shipCountry: [x.shipCountry, [Validators.required]],
+        shipper: [x.shipper, [Validators.required]],
+        products: this.formBuilder.array(
+          x.products.map(y => this.formBuilder.group({
+            quantity: [y.quantity, [Validators.required, Validators.pattern(this.numberPattern)]],
+            name: [y.name],
+            id: [y.id]
           })))
-        }))
-      )
-    })
+      }))
+    )
   }
 
   formInvalid(index){
