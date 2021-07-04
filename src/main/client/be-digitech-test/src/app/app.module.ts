@@ -21,6 +21,7 @@ import { ListaCittaComponent } from './components/lista-citta/lista-citta.compon
 import { CreateAccountComponent } from './components/create-account/create-account.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgxSpinnerModule } from "ngx-spinner";
+import { OrdiniBeComponent } from './components/ordini-be/ordini-be.component';
 
 registerLocaleData(localeIt);
 
@@ -33,7 +34,8 @@ registerLocaleData(localeIt);
     OrdiniComponent,
     HomePageComponent,
     ListaCittaComponent,
-    CreateAccountComponent
+    CreateAccountComponent,
+    OrdiniBeComponent
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,7 @@
 package bedigitech.test.repository;
 
 import bedigitech.test.model.Order;
+import bedigitech.test.model.OrderFilters;
 import bedigitech.test.model.Product;
 import bedigitech.test.model.Shippers;
 import bedigitech.test.rowMapper.OrderRowMapper;
@@ -30,6 +31,44 @@ public class OrderRepository {
                 "INNER JOIN Customers c on o.CustomerID = c.id\n" +
                 "INNER JOIN Shippers s on o.ShipperID = s.id\n" +
                 ") as x WHERE RowNumber BETWEEN "+start+" AND " + end, new OrderRowMapper());
+    }
+
+    public List<Order> findOrdersByRangeByFilter(OrderFilters filter) {
+        return jdbcTemplate.query("SELECT * FROM (\n" +
+                        "SELECT o.id as OrderID, o.OrderDate, o.ShipCity, o.ShipCountry, o.ShipAddress, o.ShipPostalCode,\n" +
+                        "c.Name as CustomerName,s.name as shipperName,s.phone,s.id as ShipperID,\n" +
+                        "ROW_NUMBER() OVER (ORDER BY o.id) AS 'RowNumber'\n" +
+                        "FROM Orders o\n" +
+                        "INNER JOIN Customers c on o.CustomerID = c.id\n" +
+                        "INNER JOIN Shippers s on o.ShipperID = s.id\n" +
+                        ") as x WHERE RowNumber BETWEEN " + filter.getStart() + " AND " + filter.getEnd() + createWhere(filter),
+                new OrderRowMapper());
+    }
+
+    private String createWhere(OrderFilters filter){
+        String whereClause = "";
+        if(filter.getCustomerName() != null && filter.getCustomerName().length() > 0){
+            whereClause += "\nAND CustomerName LIKE '%"+filter.getCustomerName()+"%'";
+        }
+        if(filter.getOrderDate() != null){
+            whereClause += "\nAND OrderDate = '"+ new java.sql.Date(filter.getOrderDate().getTime())+"'";
+        }
+        if(filter.getShipCity() != null && filter.getShipCity().length() > 0){
+            whereClause += "\nAND ShipCity LIKE '%"+filter.getShipCity()+"%'";
+        }
+        if(filter.getShipCountry() != null && filter.getShipCountry().length() > 0){
+            whereClause += "\nAND ShipCountry LIKE '%"+filter.getShipCountry()+"%'";
+        }
+        if(filter.getShipAddress() != null && filter.getShipAddress().length() > 0){
+            whereClause += "\nAND ShipAddress LIKE '%"+filter.getShipAddress()+"%'";
+        }
+        if(filter.getShipPostalCode() != null && filter.getShipPostalCode().length() > 0){
+            whereClause += "\nAND ShipPostalCode LIKE '%"+filter.getShipPostalCode()+"%'";
+        }
+        if(filter.getShipper() != null && filter.getShipper().length() > 0){
+            whereClause += "\nAND shipperName LIKE '%"+filter.getShipper()+"%'";
+        }
+        return whereClause;
     }
 
     public Order getSingleOrder(long orderId) {

@@ -1,6 +1,7 @@
 package bedigitech.test.controller;
 
 import bedigitech.test.model.Order;
+import bedigitech.test.model.OrderFilters;
 import bedigitech.test.model.Shippers;
 import bedigitech.test.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,15 @@ public class OrderController implements BasicController {
     public List<Order> findOrdersByRange(@RequestParam(value = "start") Integer start,
                                          @RequestParam(value = "end") Integer end) {
         List<Order> orders = orderRepository.findOrdersByRange(start, end);
+        for (Order order: orders) {
+            order.setProducts(orderRepository.getProducts(order.getId()));
+        }
+        return orders;
+    }
+
+    @PostMapping("/ordersByRangeByFilter")
+    public List<Order> ordersByRangeByFilter(@RequestBody OrderFilters filter) {
+        List<Order> orders = orderRepository.findOrdersByRangeByFilter(filter);
         for (Order order: orders) {
             order.setProducts(orderRepository.getProducts(order.getId()));
         }
