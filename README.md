@@ -21,5 +21,6 @@ Instruction to run application:
   4b) for 1 server (BE) (production mode) from client root launch: npm run build 
       then launch the MAIN that is in java class TestApplication.
       Application respond on url: http://localhost:8080/
+  
   N.B.) for send mail with gmail need to abilitate 2 step password in gmail and create the app code for mail service
       and set it like spring.mail.password in file application.properties
