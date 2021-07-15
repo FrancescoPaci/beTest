@@ -1,0 +1,28 @@
+<div class="container-fluid" [ngClass]="{'dark-site': siteColor === 'dark'}">
+  <div class="row toolbar">
+    <div class="col-12 text-center">
+      <h1>PAX APP - {{page}}</h1>
+    </div>
+    <div class="col-12 text-center">
+      <button class="btn btn-primary btn-sm" type="button" (click)="setDarkSite()">Cambia sfondo</button>
+      <button class="btn btn-primary btn-sm" type="button" (click)="logout()" [hidden]="hideLogout()">Logout</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-2">
+      <ul class="list-group" *ngIf="page !== 'Login'">
+        <li class="list-group-item" *ngFor="let section of pages" routerLink="{{section.route}}"
+            [hidden]="section.hidden || !section.roles.includes(role)" (click)="page = section.title"
+            routerLinkActive="active" [ngClass]="{'disabled': section.disabled}">
+          {{section.title}}
+        </li>
+      </ul>
+    </div>
+    <div class="col-10" style="padding-left:0;">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+<ngx-spinner size="medium" type="line-spin-fade" [fullScreen]="true">
+  <p style="color: white"> Loading... </p>
+</ngx-spinner>
