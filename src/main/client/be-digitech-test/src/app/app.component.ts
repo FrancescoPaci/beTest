@@ -17,12 +17,15 @@ export class AppComponent {
     });
   }
 
+  role: string = localStorage.getItem('userRole')
   siteColor = localStorage.getItem("siteColor") || 'white'
   page: string
   pages = [
-    {title: 'Home Page', route: '/homePage'},
-    {title: 'Login', route: '/loginPage'},
-    {title: 'Crea Account', route: '/createAccount'}
+    {title: 'Ordini FE', route: '/ordini', roles: ['ADMIN']},
+    {title: 'Ordini BE', route: '/ordiniBe', roles: ['ADMIN']},
+    {title: 'Home Page', route: '/homePage', hidden: true},
+    {title: 'Login', route: '/loginPage', hidden: true},
+    {title: 'Crea Account', route: '/createAccount', hidden: true}
   ]
 
   ngOnInit(){}

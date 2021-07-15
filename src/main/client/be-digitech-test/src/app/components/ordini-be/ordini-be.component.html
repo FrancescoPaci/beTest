@@ -1,6 +1,6 @@
 <div id="lista-ordini" class="border content-box">
 
-  <h3 class="text-center">LISTA ORDINI (gestione a FE)</h3>
+  <h3 class="text-center">LISTA ORDINI (gestione a BE)</h3>
 
   <div class="row mb-2">
     <div class="col-12">
@@ -22,13 +22,16 @@
         <table class="table table-striped table-bordered table-hover table-sm" [ngClass]="{'table-dark': siteColor === 'dark'}">
           <thead>
           <tr formGroupName="orderFilters">
-            <th>
-              <button class="btn btn-primary btn-sm" type="submit" (click)="resetFilters()" tooltip="reset filters">
+            <th style="width: 0;">
+              <button class="btn btn-primary btn-sm" type="button" (click)="resetFilters()" tooltip="reset filters" style="margin-bottom: 5px">
                 <i class="fa fa-refresh"></i>
+              </button>
+              <button class="btn btn-primary btn-sm" type="button" (click)="applyFilters()" [disabled]="filterInvalid()" tooltip="apply filters">
+                <i class="fa fa-search"></i>
               </button>
             </th>
             <th *ngFor="let column of filterColumns; let i = index">
-              <input type="text" formControlName="{{column}}" (keyup)="applyFilters()" class="form-control form-control-sm">
+              <input type="text" formControlName="{{column}}" class="form-control form-control-sm" placeholder="{{findPlaceHolder(column)}}">
             </th>
             <th></th>
           </tr>
@@ -46,7 +49,7 @@
           </tr>
           </thead>
           <tbody formArrayName="orderDetails">
-          <tr *ngFor="let order of ordersFiltered; let i = index">
+          <tr *ngFor="let order of orders; let i = index">
             <ng-container *ngIf="!order.inModifica">
               <td>{{(i+1) + ((currentPage -1) * itemsPerPage)}}</td>
               <td>{{order.customerName}}</td>
