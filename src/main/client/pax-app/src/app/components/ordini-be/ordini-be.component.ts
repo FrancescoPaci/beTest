@@ -25,7 +25,7 @@ export class OrdiniBeComponent implements OnInit {
     })
   }
 
-  ordersForm
+  ordersForm: any
   orders: any = []
   cities: any = []
   shippers: any = []
@@ -33,7 +33,7 @@ export class OrdiniBeComponent implements OnInit {
   start = 0
   end = 10
 
-  siteColor
+  siteColor: string
   fontSize = 14
 
   currentPage = 1
@@ -52,8 +52,8 @@ export class OrdiniBeComponent implements OnInit {
     this.getShippers()
   }
 
-  findPlaceHolder(field){
-    if(field === 'orderDate'){
+  findPlaceHolder(field: string) {
+    if (field === 'orderDate') {
       return 'yyyy-mm-dd'
     }
   }
@@ -71,15 +71,15 @@ export class OrdiniBeComponent implements OnInit {
     this.getOrdersByFilter(null)
   }
 
-  setPageActive(event: any, setData): void {
+  setPageActive(event: any): void {
     this.currentPage = event && event.page ? event.page : (this.currentPage || 1)
     this.start = (this.currentPage - 1) * this.itemsPerPage
     this.end = this.currentPage * this.itemsPerPage
     this.getOrdersByFilter(null)
   }
 
-  getOrdersByFilter(filters) {
-    if(!filters) filters = {}
+  getOrdersByFilter(filters: any) {
+    if (!filters) filters = {}
     filters.start = this.start
     this.httpService.callPost('ordersByRangeBE', filters).subscribe(
       data => {
@@ -93,8 +93,8 @@ export class OrdiniBeComponent implements OnInit {
         }
         this.cities = cities
       },
-      error => {},
-      () => {}
+      error => { },
+      () => { }
     )
   }
 
@@ -103,8 +103,8 @@ export class OrdiniBeComponent implements OnInit {
       data => {
         this.totalItems = data as number
       },
-      error => {},
-      () => {}
+      error => { },
+      () => { }
     )
   }
 
@@ -113,21 +113,31 @@ export class OrdiniBeComponent implements OnInit {
       data => {
         this.shippers = data
       },
-      error => {},
-      () => {}
+      error => { },
+      () => { }
     )
   }
 
-  modifyOrder(order) {
+  modifyOrder(order: any) {
     order.inModifica = true
   }
 
-  cancelModOrder(index) {
+  cancelModOrder(index: number) {
     delete this.orders[index].inModifica
-    this.ordersForm.controls.orderDetails.controls[index].setValue(JSON.parse(JSON.stringify(this.orders[index])))
+    let x = this.orders[index]
+    this.ordersForm.controls.orderDetails.controls[index].setValue({
+      id: x.order.id,
+      orderDate: x.order.orderDate,
+      shipCity: x.order.shipCity,
+      shipAddress: x.order.shipAddress,
+      shipPostalCode: x.order.shipPostalCode,
+      shipCountry: x.order.shipCountry,
+      shipper: x.shipper,
+      products: x.products
+    })
   }
 
-  saveOrder(index) {
+  saveOrder(index: number) {
     let order = this.ordersForm.controls.orderDetails.controls[index].value
     this.httpService.callPost("updateOrder", order).subscribe(
       data => {
@@ -137,11 +147,11 @@ export class OrdiniBeComponent implements OnInit {
       error => {
         this.openModal('Errore', "La modifica dell'ordine non è riuscita")
       },
-      () => {}
+      () => { }
     )
   }
 
-  compareShipper(a, b) {
+  compareShipper(a: any, b: any) {
     return a && b && a.id === b.id;
   }
 
@@ -158,6 +168,7 @@ export class OrdiniBeComponent implements OnInit {
         products: x.products && this.formBuilder.array(
           x.products.map(y => this.formBuilder.group({
             //quantity: [y.quantity, [Validators.required, Validators.pattern(this.numberPattern)]],
+            unitPrice: [y.unitPrice, [Validators.required]],
             name: [y.name],
             id: [y.id]
           })))
@@ -165,7 +176,7 @@ export class OrdiniBeComponent implements OnInit {
     )
   }
 
-  formInvalid(index) {
+  formInvalid(index: number) {
     return this.ordersForm.controls.orderDetails.controls[index].pristine ||
       this.ordersForm.controls.orderDetails.controls[index].status === 'INVALID'
   }
@@ -175,7 +186,7 @@ export class OrdiniBeComponent implements OnInit {
       this.ordersForm.controls.orderFilters.status === 'INVALID'
   }
 
-  openModal(title, text) {
+  openModal(title: string, text: string) {
     const initialState = {
       title: title,
       text: text

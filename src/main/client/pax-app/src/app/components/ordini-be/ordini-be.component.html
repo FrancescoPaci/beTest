@@ -110,7 +110,7 @@
   <div class="row" [hidden]="!orders.length">
     <div class="col-12 pull-rigth">
       <pagination [(ngModel)]="currentPage" [totalItems]="totalItems" [maxSize]="maxSizePagination" [itemsPerPage]="itemsPerPage" [boundaryLinks]="true"
-                  (pageChanged)="setPageActive($event, true)" class="pull-right" [ngClass]="{'pagination-dark': siteColor === 'dark'}">
+                  (pageChanged)="setPageActive($event)" class="pull-right" [ngClass]="{'pagination-dark': siteColor === 'dark'}">
       </pagination>
     </div>
   </div>
