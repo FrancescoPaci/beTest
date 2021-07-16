@@ -67,9 +67,6 @@ public class OrderRepository {
 
     private String createWhere(OrderFilters filter){
         String whereClause = "";
-        if(filter.getCustomerName() != null && filter.getCustomerName().length() > 0){
-            whereClause += "\nAND CustomerName LIKE '%"+filter.getCustomerName()+"%'";
-        }
         if(filter.getOrderDate() != null){
             whereClause += "\nAND OrderDate = '"+ new java.sql.Date(filter.getOrderDate().getTime())+"'";
         }

@@ -31,7 +31,6 @@ export class OrdiniBeComponent implements OnInit {
   shippers: any = []
   filterColumns: any = ['orderDate', 'shipCity', 'shipAddress', 'shipPostalCode', 'shipCountry', 'shipper']
   start = 0
-  end = 10
 
   siteColor: string
   fontSize = 14
@@ -47,8 +46,7 @@ export class OrdiniBeComponent implements OnInit {
   orderObj = { orderDate: [null, [Validators.pattern(this.datePattern)]], shipCity: '', shipAddress: '', shipPostalCode: '', shipCountry: '', shipper: '' }
 
   ngOnInit(): void {
-    this.getOrdersByFilter(null)
-    this.getTotalOrders()
+    this.getOrdersByFilter()
     this.getShippers()
   }
 
@@ -59,28 +57,17 @@ export class OrdiniBeComponent implements OnInit {
   }
 
   applyFilters() {
-    let filters = {}
+    this.start = 0
+    this.currentPage = 1
+    this.getOrdersByFilter()
+  }
+
+  getOrdersByFilter() {
+    let filters = { start: this.start }
     for (var i = 0; i < this.filterColumns.length; i++) {
       filters[this.filterColumns[i]] = this.ordersForm.controls.orderFilters.controls[this.filterColumns[i]].value
     }
-    this.getOrdersByFilter(filters)
-  }
-
-  resetFilters() {
-    this.ordersForm.controls.orderFilters.reset()
-    this.getOrdersByFilter(null)
-  }
-
-  setPageActive(event: any): void {
-    this.currentPage = event && event.page ? event.page : (this.currentPage || 1)
-    this.start = (this.currentPage - 1) * this.itemsPerPage
-    this.end = this.currentPage * this.itemsPerPage
-    this.getOrdersByFilter(null)
-  }
-
-  getOrdersByFilter(filters: any) {
-    if (!filters) filters = {}
-    filters.start = this.start
+    this.getTotalOrders(filters)
     this.httpService.callPost('ordersByRangeBE', filters).subscribe(
       data => {
         this.orders = data
@@ -98,14 +85,25 @@ export class OrdiniBeComponent implements OnInit {
     )
   }
 
-  getTotalOrders() {
-    this.httpService.callGet('ordersCount').subscribe(
+  getTotalOrders(filters: any) {
+    this.httpService.callPost('ordersCountBE', filters).subscribe(
       data => {
         this.totalItems = data as number
       },
       error => { },
       () => { }
     )
+  }
+
+  resetFilters() {
+    this.ordersForm.controls.orderFilters.reset()
+    this.getOrdersByFilter()
+  }
+
+  setPageActive(event: any): void {
+    this.currentPage = event && event.page ? event.page : (this.currentPage || 1)
+    this.start = (this.currentPage - 1) * this.itemsPerPage
+    this.getOrdersByFilter()
   }
 
   getShippers() {

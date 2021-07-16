@@ -11,7 +11,6 @@ import java.util.Date;
 @AllArgsConstructor
 public class OrderFilters extends Pagination {
 
-    private String customerName;
     private Date orderDate;
     private String shipCity;
     private String shipAddress;

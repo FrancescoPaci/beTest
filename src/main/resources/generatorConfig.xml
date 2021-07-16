@@ -35,10 +35,21 @@
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 
-        <table tableName="%"></table>
+        <!--<table tableName="%"></table>-->
+
+        <table tableName="Orders">
+            <columnOverride column="Order_Date" jdbcType="DATE" typeHandler="org.apache.ibatis.type.SqlDateTypeHandler"/>
+            <columnOverride column="required_Date" jdbcType="DATE" typeHandler="org.apache.ibatis.type.SqlDateTypeHandler"/>
+            <columnOverride column="shipped_Date" jdbcType="DATE" typeHandler="org.apache.ibatis.type.SqlDateTypeHandler"/>
+        </table>
+        <table tableName="Customers"></table>
+        <table tableName="Orders_Details"></table>
+        <table tableName="Products"></table>
+        <table tableName="Shippers"></table>
+        <table tableName="Users"></table>
 
         <table tableName="ALLTYPES" >
-            <columnOverride column="UNSIGNED_BIGINT_FIELD" javaType="java.lang.Object" jdbcType="BIGDECIMAL" />
+            <columnOverride column="UNSIGNED_BIGINT_FIELD" javaType="java.lang.Object" jdbcType="LONG" />
         </table>
 
     </context>

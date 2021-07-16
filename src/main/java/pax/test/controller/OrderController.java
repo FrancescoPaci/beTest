@@ -28,7 +28,12 @@ public class OrderController implements BasicController {
 
     @PostMapping("/ordersByRangeBE")
     public List<OrderDto> findOrdersByRangeBE(@RequestBody OrderFilters filter) {
-        return orderService.findOrdersByRangeBE(filter.getStart());
+        return orderService.findOrdersByRangeBE(filter);
+    }
+
+    @PostMapping("/ordersCountBE")
+    public Long findCountOrdersBE(@RequestBody OrderFilters filter) {
+        return orderService.findCountOrdersBe(filter);
     }
 
     @PostMapping("/ordersByRangeByFilter")
