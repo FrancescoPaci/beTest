@@ -1,4 +1,4 @@
-package pax.test.service;
+package pax.test.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

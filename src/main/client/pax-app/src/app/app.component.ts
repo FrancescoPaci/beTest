@@ -13,11 +13,12 @@ export class AppComponent {
    router.events.subscribe((val) => {
       if(val instanceof NavigationEnd){
         this.page = this.pages.find(function (o) { return o.route == router.url }).title
+        this.role = localStorage.getItem('userRole')
       }
     });
   }
 
-  role: string = localStorage.getItem('userRole')
+  role: string
   siteColor = localStorage.getItem("siteColor") || 'white'
   page: string
   pages = [

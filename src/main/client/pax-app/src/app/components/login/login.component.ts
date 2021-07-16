@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
         data => {
           this.sendMail()
           localStorage.setItem('userRole', data[0].authority)
-          this.router.navigate(['meteo'])
+          this.router.navigate(['ordiniBe'])
           this.errMsg = ""
         },
         error => {

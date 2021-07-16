@@ -29,7 +29,7 @@ export class OrdiniBeComponent implements OnInit {
   orders: any = []
   cities: any = []
   shippers: any = []
-  filterColumns: any = ['customerName', 'orderDate', 'shipCity', 'shipAddress', 'shipPostalCode', 'shipCountry', 'shipper']
+  filterColumns: any = ['orderDate', 'shipCity', 'shipAddress', 'shipPostalCode', 'shipCountry', 'shipper']
   start = 0
   end = 10
 
@@ -44,7 +44,7 @@ export class OrdiniBeComponent implements OnInit {
   role = localStorage.getItem('userRole')
   datePattern = /^[\d]{4}-[\d]{2}-[\d]{2}$/
   numberPattern = /^[\d]*$/
-  orderObj = { customerName: '', orderDate: [null, [Validators.pattern(this.datePattern)]], shipCity: '', shipAddress: '', shipPostalCode: '', shipCountry: '', shipper: '' }
+  orderObj = { orderDate: [null, [Validators.pattern(this.datePattern)]], shipCity: '', shipAddress: '', shipPostalCode: '', shipCountry: '', shipper: '' }
 
   ngOnInit(): void {
     this.getOrdersByFilter(null)
@@ -73,7 +73,7 @@ export class OrdiniBeComponent implements OnInit {
 
   setPageActive(event: any, setData): void {
     this.currentPage = event && event.page ? event.page : (this.currentPage || 1)
-    this.start = (this.currentPage - 1) * this.itemsPerPage + 1
+    this.start = (this.currentPage - 1) * this.itemsPerPage
     this.end = this.currentPage * this.itemsPerPage
     this.getOrdersByFilter(null)
   }
@@ -81,8 +81,7 @@ export class OrdiniBeComponent implements OnInit {
   getOrdersByFilter(filters) {
     if(!filters) filters = {}
     filters.start = this.start
-    filters.end = this.end
-    this.httpService.callPost('ordersByRangeByFilter', filters).subscribe(
+    this.httpService.callPost('ordersByRangeBE', filters).subscribe(
       data => {
         this.orders = data
         this.createForm()
@@ -149,17 +148,16 @@ export class OrdiniBeComponent implements OnInit {
   createForm() {
     this.ordersForm.controls.orderDetails = this.formBuilder.array(
       this.orders.map(x => this.formBuilder.group({
-        customerName: [x.customerName],
-        id: [x.id],
-        orderDate: [x.orderDate, [Validators.required, Validators.pattern(this.datePattern)]],
-        shipCity: [x.shipCity, [Validators.required]],
-        shipAddress: [x.shipAddress, [Validators.required]],
-        shipPostalCode: [x.shipPostalCode, [Validators.required]],
-        shipCountry: [x.shipCountry, [Validators.required]],
+        id: [x.order.id],
+        orderDate: [x.order.orderDate, [Validators.required, Validators.pattern(this.datePattern)]],
+        shipCity: [x.order.shipCity, [Validators.required]],
+        shipAddress: [x.order.shipAddress, [Validators.required]],
+        shipPostalCode: [x.order.shipPostalCode, [Validators.required]],
+        shipCountry: [x.order.shipCountry, [Validators.required]],
         shipper: [x.shipper, [Validators.required]],
-        products: this.formBuilder.array(
+        products: x.products && this.formBuilder.array(
           x.products.map(y => this.formBuilder.group({
-            quantity: [y.quantity, [Validators.required, Validators.pattern(this.numberPattern)]],
+            //quantity: [y.quantity, [Validators.required, Validators.pattern(this.numberPattern)]],
             name: [y.name],
             id: [y.id]
           })))
@@ -191,7 +189,7 @@ export class OrdiniBeComponent implements OnInit {
       let excelData = []
       for (var i = 0; i < this.orders.length; i++) {
         let order = this.orders[i]
-        let orderData = [order.customerName, order.orderDate, order.shipCity, order.shipAddress,
+        let orderData = [order.orderDate, order.shipCity, order.shipAddress,
         order.shipPostalCode, order.shipCountry, order.shipper.companyName + " " + order.shipper.phone]
         let products = []
         for (var j = 0; j < order.products.length; j++) {

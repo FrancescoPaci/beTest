@@ -1,26 +1,31 @@
-package pax.test.repository;
+package pax.test.services;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pax.test.model.*;
+import pax.test.model.Shippers;
+import pax.test.mybatis.mapper.OrdersDetailsMapper;
 import pax.test.mybatis.mapper.OrdersMapper;
 import pax.test.mybatis.mapper.ProductsMapper;
 import pax.test.mybatis.mapper.ShippersMapper;
-import pax.test.mybatis.model.Orders;
+import pax.test.mybatis.model.*;
 import pax.test.rowMapper.OrderRowMapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
-public class OrderRepository {
+@Service
+public class OrderService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private OrdersMapper ordersMapper;
+    @Autowired
+    private OrdersDetailsMapper ordersDetailsMapper;
     @Autowired
     private ProductsMapper productsMapper;
     @Autowired
@@ -30,16 +35,27 @@ public class OrderRepository {
         return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM Orders", Long.class);
     }
 
-    public List<OrderDto> findOrdersByRange2(Integer start, Integer end) {
-        List<Orders> orders = ordersMapper.selectByExample(null);
-        List<OrderDto> ordersDto = new ArrayList<>();
+    public List<OrderDto> findOrdersByRangeBE(Integer start) {
+        List<Orders> orders = ordersMapper.selectByExampleWithRowbounds(null, new RowBounds(start, 10));
+        List<OrderDto> ordersList = new ArrayList<>();
         for (Orders order: orders) {
             OrderDto orderDto = new OrderDto();
             orderDto.setOrder(order);
             orderDto.setShipper(shippersMapper.selectByPrimaryKey(order.getShipperId()));
-            ordersDto.add(orderDto);
+
+            OrdersDetailsExample odExample = new OrdersDetailsExample();
+            odExample.or().andOrderIdEqualTo(order.getId());
+            List<OrdersDetails> odList = ordersDetailsMapper.selectByExample(odExample);
+
+            for (OrdersDetails od: odList) {
+                ProductsExample prodExample = new ProductsExample();
+                prodExample.or().andIdEqualTo(od.getProductId());
+                orderDto.setProducts(productsMapper.selectByExample(prodExample));
+            }
+
+            ordersList.add(orderDto);
         }
-        return ordersDto;
+        return ordersList;
     }
 
     public List<Order> findOrdersByRange(Integer start, Integer end) {

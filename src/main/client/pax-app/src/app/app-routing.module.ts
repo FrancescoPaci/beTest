@@ -14,8 +14,8 @@ const routes: Routes = [
   { path: 'ordini', component: OrdiniComponent, canActivate: [RouteGuardService] },
   { path: 'loginPage', component: LoginComponent },
   { path: 'createAccount', component: CreateAccountComponent },
-  { path: '', redirectTo: 'ordini', pathMatch: 'full', canActivate: [RouteGuardService] },
-  { path: '**', redirectTo: 'ordini' , pathMatch: 'full', canActivate: [RouteGuardService] }
+  { path: '', redirectTo: 'ordiniBe', pathMatch: 'full', canActivate: [RouteGuardService] },
+  { path: '**', redirectTo: 'ordiniBe' , pathMatch: 'full', canActivate: [RouteGuardService] }
 ]
 
 @NgModule({
