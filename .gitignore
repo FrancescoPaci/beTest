@@ -4,6 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 !**/src/main/resources/static
+src/main/java/pax/test/mybatis/
+src/main/resources/pax/test/mybatis/
 
 ### STS ###
 .apt_generated
