@@ -122,25 +122,41 @@ export class OrdiniBeComponent implements OnInit {
 
   cancelModOrder(index: number) {
     delete this.orders[index].inModifica
-    let x = this.orders[index]
+    this.fromOrderDtoToFormOrder(this.orders[index], index)
+  }
+
+  fromOrderDtoToFormOrder(orderDto, index) {
     this.ordersForm.controls.orderDetails.controls[index].setValue({
-      id: x.order.id,
-      orderDate: x.order.orderDate,
-      shipCity: x.order.shipCity,
-      shipAddress: x.order.shipAddress,
-      shipPostalCode: x.order.shipPostalCode,
-      shipCountry: x.order.shipCountry,
-      shipper: x.shipper,
-      products: x.products
+      id: orderDto.order.id,
+      orderDate: orderDto.order.orderDate,
+      shipCity: orderDto.order.shipCity,
+      shipAddress: orderDto.order.shipAddress,
+      shipPostalCode: orderDto.order.shipPostalCode,
+      shipCountry: orderDto.order.shipCountry,
+      shipper: orderDto.shipper,
+      products: orderDto.products
     })
   }
 
   saveOrder(index: number) {
-    let order = this.ordersForm.controls.orderDetails.controls[index].value
-    this.httpService.callPost("updateOrder", order).subscribe(
-      data => {
-        this.orders[index] = data
-        this.ordersForm.controls.orderDetails.controls[index].setValue(data)
+    let formOrder = this.ordersForm.controls.orderDetails.controls[index].value
+    let orderDto = {
+      order: {
+        id: formOrder.id,
+        orderDate: formOrder.orderDate,
+        shipCity: formOrder.shipCity,
+        shipperId: formOrder.shipper.id,
+        shipAddress: formOrder.shipAddress,
+        shipPostalCode: formOrder.shipPostalCode,
+        shipCountry: formOrder.shipCountry
+      },
+      shipper: formOrder.shipper,
+      products: formOrder.products
+    }
+    this.httpService.callPost("updateOrder", orderDto).subscribe(
+      orderDto => {
+        this.orders[index] = orderDto
+        this.fromOrderDtoToFormOrder(orderDto, index)
       },
       error => {
         this.openModal('Errore', "La modifica dell'ordine non è riuscita")
@@ -165,7 +181,6 @@ export class OrdiniBeComponent implements OnInit {
         shipper: [x.shipper, [Validators.required]],
         products: x.products && this.formBuilder.array(
           x.products.map(y => this.formBuilder.group({
-            //quantity: [y.quantity, [Validators.required, Validators.pattern(this.numberPattern)]],
             unitPrice: [y.unitPrice, [Validators.required]],
             name: [y.name],
             id: [y.id]

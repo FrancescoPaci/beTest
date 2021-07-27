@@ -1,11 +1,13 @@
 package pax.test.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import pax.test.model.Order;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import pax.test.model.OrderDto;
 import pax.test.model.OrderFilters;
-import pax.test.model.Shippers;
+import pax.test.mybatis.model.Shippers;
 import pax.test.services.OrderService;
 
 import java.util.List;
@@ -16,38 +18,14 @@ public class OrderController implements BasicController {
     @Autowired
     OrderService orderService;
 
-    @GetMapping("/ordersByRange")
-    public List<Order> findOrdersByRange(@RequestParam(value = "start") Integer start,
-                                         @RequestParam(value = "end") Integer end) {
-        List<Order> orders = orderService.findOrdersByRange(start, end);
-        for (Order order: orders) {
-            order.setProducts(orderService.getProducts(order.getId()));
-        }
-        return orders;
-    }
-
     @PostMapping("/ordersByRangeBE")
-    public List<OrderDto> findOrdersByRangeBE(@RequestBody OrderFilters filter) {
-        return orderService.findOrdersByRangeBE(filter);
+    public List<OrderDto> findOrdersByRange(@RequestBody OrderFilters filter) {
+        return orderService.findOrdersByRange(filter);
     }
 
     @PostMapping("/ordersCountBE")
-    public Long findCountOrdersBE(@RequestBody OrderFilters filter) {
-        return orderService.findCountOrdersBe(filter);
-    }
-
-    @PostMapping("/ordersByRangeByFilter")
-    public List<Order> ordersByRangeByFilter(@RequestBody OrderFilters filter) {
-        List<Order> orders = orderService.findOrdersByRangeByFilter(filter);
-        for (Order order: orders) {
-            order.setProducts(orderService.getProducts(order.getId()));
-        }
-        return orders;
-    }
-
-    @GetMapping("/ordersCount")
-    public Long findCountOrders() {
-        return orderService.findCountOrders();
+    public Long findCountOrders(@RequestBody OrderFilters filter) {
+        return orderService.findCountOrders(filter);
     }
 
     @GetMapping("/getShippers")
@@ -56,11 +34,14 @@ public class OrderController implements BasicController {
     }
 
     @PostMapping("/updateOrder")
-    public Order updateOrder(@RequestBody Order order) {
-        orderService.updateOrderAndProducts(order);
-        Order outputOrder = orderService.getSingleOrder(order.getId());
-        outputOrder.setProducts(orderService.getProducts(order.getId()));
-        return outputOrder;
+    public OrderDto updateOrder(@RequestBody OrderDto orderDto) {
+        try {
+            orderService.updateOrderAndProducts(orderDto);
+        } catch (Exception e) {
+            orderDto.setOrder(orderService.getSingleOrder(orderDto.getOrder().getId()));
+            orderDto.setProducts(orderService.getProductByOrder(orderDto.getOrder()));
+        }
+        return orderDto;
     }
 
 }
