@@ -36,11 +36,9 @@
         </javaClientGenerator>
 
         <table tableName="Orders">
-            <!--
-            <columnOverride column="Order_Date" jdbcType="DATE"/>
-            <columnOverride column="required_Date" jdbcType="DATE"/>
-            <columnOverride column="shipped_Date" jdbcType="DATE"/>
-            -->
+            <columnOverride column="Order_Date"  jdbcType="DATE" javaType="java.sql.Date" />
+            <columnOverride column="required_Date"  jdbcType="DATE" javaType="java.sql.Date" />
+            <columnOverride column="shipped_Date"  jdbcType="DATE" javaType="java.sql.Date" />
         </table>
         <table tableName="Customers"></table>
         <table tableName="Orders_Details"></table>

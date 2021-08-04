@@ -34,14 +34,8 @@ public class OrderController implements BasicController {
     }
 
     @PostMapping("/updateOrder")
-    public OrderDto updateOrder(@RequestBody OrderDto orderDto) {
-        try {
-            orderService.updateOrderAndProducts(orderDto);
-        } catch (Exception e) {
-            orderDto.setOrder(orderService.getSingleOrder(orderDto.getOrder().getId()));
-            orderDto.setProducts(orderService.getProductByOrder(orderDto.getOrder()));
-        }
-        return orderDto;
+    public void updateOrder(@RequestBody OrderDto orderDto) {
+        orderService.updateOrderAndProducts(orderDto);
     }
 
 }

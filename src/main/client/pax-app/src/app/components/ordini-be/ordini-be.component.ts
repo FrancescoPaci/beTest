@@ -154,12 +154,13 @@ export class OrdiniBeComponent implements OnInit {
       products: formOrder.products
     }
     this.httpService.callPost("updateOrder", orderDto).subscribe(
-      orderDto => {
+      data => {
         this.orders[index] = orderDto
         this.fromOrderDtoToFormOrder(orderDto, index)
       },
       error => {
         this.openModal('Errore', "La modifica dell'ordine non è riuscita")
+        this.cancelModOrder(index)
       },
       () => { }
     )
