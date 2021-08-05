@@ -38,4 +38,9 @@ public class OrderController implements BasicController {
         orderService.updateOrderAndProducts(orderDto);
     }
 
+    @GetMapping("/selectDistinct")
+    public List<String> selectDistinct() {
+        return orderService.selectDistinctByColumnFromXml();
+    }
+
 }

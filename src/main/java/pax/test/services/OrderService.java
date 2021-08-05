@@ -2,11 +2,11 @@ package pax.test.services;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pax.test.model.OrderDto;
 import pax.test.model.OrderFilters;
+import pax.test.mybatis.custom.OrdersCustomMapper;
 import pax.test.mybatis.mapper.OrdersDetailsMapper;
 import pax.test.mybatis.mapper.OrdersMapper;
 import pax.test.mybatis.mapper.ProductsMapper;
@@ -20,8 +20,6 @@ import java.util.List;
 public class OrderService {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    @Autowired
     private OrdersMapper ordersMapper;
     @Autowired
     private OrdersDetailsMapper ordersDetailsMapper;
@@ -29,6 +27,8 @@ public class OrderService {
     private ProductsMapper productsMapper;
     @Autowired
     private ShippersMapper shippersMapper;
+    @Autowired
+    private OrdersCustomMapper ordersCustomMapper;
 
     public Long findCountOrders(OrderFilters filter){
         return ordersMapper.countByExample(createOrderExampleByFilter(filter));
@@ -105,6 +105,14 @@ public class OrderService {
 
     public List<Shippers> getShippers(){
         return shippersMapper.selectByExample(null);
+    }
+
+    public List<String> selectColumnById() {
+        return ordersCustomMapper.selectColumnById("Ship_city", 1);
+    }
+
+    public List<String> selectDistinctByColumnFromXml() {
+        return ordersCustomMapper.selectDistinctByColumnFromXml("Ship_Country");
     }
 
 }

@@ -46,6 +46,7 @@ export class OrdiniBeComponent implements OnInit {
   orderObj = { orderDate: [null, [Validators.pattern(this.datePattern)]], shipCity: '', shipAddress: '', shipPostalCode: '', shipCountry: '', shipper: '' }
 
   ngOnInit(): void {
+    this.getFilters()
     this.getOrdersByFilter()
     this.getShippers()
   }
@@ -161,6 +162,17 @@ export class OrdiniBeComponent implements OnInit {
       error => {
         this.openModal('Errore', "La modifica dell'ordine non è riuscita")
         this.cancelModOrder(index)
+      },
+      () => { }
+    )
+  }
+
+  getFilters() {
+    this.httpService.callGet("selectDistinct").subscribe(
+      data => {
+        let aa = data
+      },
+      error => {
       },
       () => { }
     )
