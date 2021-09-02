@@ -1,14 +1,12 @@
 <div class="modal-header">
-  <h4 class="modal-title pull-left">{{title}}</h4>
+  <h4 class="modal-title pull-left font-weight-bold">{{title}}</h4>
   <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div class="modal-body">
-  {{text}}
+<div class="modal-body" style="word-wrap: break-word;">
+  <div [innerHTML]="text"></div>
 </div>
-
 <div class="modal-footer">
   <!--<button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Chiudi</button>-->
 </div>
-

@@ -12,14 +12,14 @@ export class LoginComponent implements OnInit {
   errMsg = ""
   model: any = {}
 
-  constructor(private httpService: HttpService, private router: Router) {}
+  constructor(private httpService: HttpService, private router: Router) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   login() {
-    if(this.model.username && this.model.password){
+    if (this.model.username && this.model.password) {
       localStorage.setItem('auth', window.btoa(this.model.username + ":" + this.model.password))
-      this.httpService.callGet('login').subscribe(
+      this.httpService.callGet('login', "Errore in fase di login").subscribe(
         data => {
           this.sendMail()
           localStorage.setItem('userRole', data[0].authority)
@@ -29,22 +29,22 @@ export class LoginComponent implements OnInit {
         error => {
           this.errMsg = "Errore in fase di login"
         },
-        () => {}
+        () => { }
       )
     } else {
       this.errMsg = "Immettere Utente e Password"
     }
   }
 
-  goToRegister(){
+  goToRegister() {
     this.router.navigate(['createAccount'])
   }
 
-  sendMail(){
-    this.httpService.callGet('sendMail').subscribe(
-      data => {},
-      error => {},
-      () => {}
+  sendMail() {
+    this.httpService.callGet('sendMail', "Errore all'invio della mail").subscribe(
+      data => { },
+      error => { },
+      () => { }
     )
   }
 

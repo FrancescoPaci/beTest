@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { HttpService } from '../../services/http.service'
 import { FormBuilder, Validators } from '@angular/forms'
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { AlertModalComponent } from '../alert-modal/alert-modal.component';
 import { ExcelService } from '../../services/excel.service'
 import { NgxSpinnerService } from "ngx-spinner"
 
@@ -13,7 +11,7 @@ import { NgxSpinnerService } from "ngx-spinner"
 })
 export class OrdiniComponent implements OnInit {
 
-  constructor(private httpService: HttpService, private formBuilder: FormBuilder, private modalService: BsModalService,
+  constructor(private httpService: HttpService, private formBuilder: FormBuilder,
     public excelService: ExcelService, private spinner: NgxSpinnerService) {
     setInterval(() => {
       this.siteColor = localStorage.getItem("siteColor")
@@ -88,7 +86,7 @@ export class OrdiniComponent implements OnInit {
 
   getOrders() {
     let params = '?start=' + this.start + '&end=' + this.end
-    this.httpService.callGet('ordersByRange' + params).subscribe(
+    this.httpService.callGet('ordersByRange' + params, "Errore nel reperimento degli ordini").subscribe(
       data => {
         this.orders = data
         this.ordersFiltered = data
@@ -107,7 +105,7 @@ export class OrdiniComponent implements OnInit {
   }
 
   getTotalOrders() {
-    this.httpService.callGet('ordersCount').subscribe(
+    this.httpService.callGet('ordersCount', "Errore nel reperimento del numero totale di ordini necessario per l'impaginazione").subscribe(
       data => {
         this.totalItems = data as number
       },
@@ -117,7 +115,7 @@ export class OrdiniComponent implements OnInit {
   }
 
   getShippers() {
-    this.httpService.callGet('getShippers').subscribe(
+    this.httpService.callGet('getShippers', "Errore nel reperimento degli shippers").subscribe(
       data => {
         this.shippers = data
       },
@@ -137,14 +135,12 @@ export class OrdiniComponent implements OnInit {
 
   saveOrder(index) {
     let order = this.ordersForm.controls.orderDetails.controls[index].value
-    this.httpService.callPost("updateOrder", order).subscribe(
+    this.httpService.callPost("updateOrder", order, "Il salvataggio dell'ordine non è riuscito").subscribe(
       data => {
         this.ordersFiltered[index] = data
         this.ordersForm.controls.orderDetails.controls[index].setValue(data)
       },
-      error => {
-        this.openModal('Errore', "La modifica dell'ordine non è riuscita")
-      },
+      error => { },
       () => { }
     )
   }
@@ -177,14 +173,6 @@ export class OrdiniComponent implements OnInit {
   formInvalid(index) {
     return this.ordersForm.controls.orderDetails.controls[index].pristine ||
       this.ordersForm.controls.orderDetails.controls[index].status === 'INVALID'
-  }
-
-  openModal(title, text) {
-    const initialState = {
-      title: title,
-      text: text
-    }
-    this.modalService.show(AlertModalComponent, { initialState })
   }
 
   createExcel() {

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { HttpService } from '../../services/http.service'
 import { FormBuilder, Validators } from '@angular/forms'
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { AlertModalComponent } from '../alert-modal/alert-modal.component';
 import { ExcelService } from '../../services/excel.service'
 import { NgxSpinnerService } from "ngx-spinner"
 
@@ -13,7 +11,7 @@ import { NgxSpinnerService } from "ngx-spinner"
 })
 export class OrdiniBeComponent implements OnInit {
 
-  constructor(private httpService: HttpService, private formBuilder: FormBuilder, private modalService: BsModalService,
+  constructor(private httpService: HttpService, private formBuilder: FormBuilder,
     public excelService: ExcelService, private spinner: NgxSpinnerService) {
     setInterval(() => {
       this.siteColor = localStorage.getItem("siteColor")
@@ -69,7 +67,7 @@ export class OrdiniBeComponent implements OnInit {
       filters[this.filterColumns[i]] = this.ordersForm.controls.orderFilters.controls[this.filterColumns[i]].value
     }
     this.getTotalOrders(filters)
-    this.httpService.callPost('ordersByRangeBE', filters).subscribe(
+    this.httpService.callPost('ordersByRangeBE', filters, "L'ordinamento non è riuscito.").subscribe(
       data => {
         this.orders = data
         this.createForm()
@@ -87,7 +85,7 @@ export class OrdiniBeComponent implements OnInit {
   }
 
   getTotalOrders(filters: any) {
-    this.httpService.callPost('ordersCountBE', filters).subscribe(
+    this.httpService.callPost('ordersCountBE', filters, "Non è stato possibile recuperare il numero totale degli ordini").subscribe(
       data => {
         this.totalItems = data as number
       },
@@ -108,7 +106,7 @@ export class OrdiniBeComponent implements OnInit {
   }
 
   getShippers() {
-    this.httpService.callGet('getShippers').subscribe(
+    this.httpService.callGet('getShippers', "Errore nel reperimento degli shippers").subscribe(
       data => {
         this.shippers = data
       },
@@ -154,26 +152,22 @@ export class OrdiniBeComponent implements OnInit {
       shipper: formOrder.shipper,
       products: formOrder.products
     }
-    this.httpService.callPost("updateOrder", orderDto).subscribe(
+    this.httpService.callPost("updateOrder", orderDto, "La modifica dell'ordine non è riuscita.").subscribe(
       data => {
         this.orders[index] = orderDto
         this.fromOrderDtoToFormOrder(orderDto, index)
       },
-      error => {
-        this.openModal('Errore', "La modifica dell'ordine non è riuscita")
-        this.cancelModOrder(index)
-      },
+      error => { },
       () => { }
     )
   }
 
-  getFilters() {
-    this.httpService.callGet("selectDistinct").subscribe(
+  getFilters() { //this method is never used is just a try
+    this.httpService.callGet("selectDistinct", "Errore nel reperimento dei filtri").subscribe(
       data => {
-        let aa = data
+        let filters = data
       },
-      error => {
-      },
+      error => { },
       () => { }
     )
   }
@@ -210,14 +204,6 @@ export class OrdiniBeComponent implements OnInit {
   filterInvalid() {
     return this.ordersForm.controls.orderFilters.pristine ||
       this.ordersForm.controls.orderFilters.status === 'INVALID'
-  }
-
-  openModal(title: string, text: string) {
-    const initialState = {
-      title: title,
-      text: text
-    }
-    this.modalService.show(AlertModalComponent, { initialState })
   }
 
   createExcel() {
