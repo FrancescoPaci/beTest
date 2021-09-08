@@ -15,6 +15,7 @@ Instruction to run application:
   3) from CMD go in client root and launch: npm install
   4) make maven clean install of project
   5) choose A or B:
+  
     A) for 2 server (BE e FE) (developer mode) from client root launch: "npm start"
        then launch the MAIN that is in java class TestApplication.
        Application respond on url: http://localhost:4200/
