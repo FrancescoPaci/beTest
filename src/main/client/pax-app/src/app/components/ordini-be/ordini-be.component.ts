@@ -73,8 +73,8 @@ export class OrdiniBeComponent implements OnInit {
         this.createForm()
         let cities = []
         for (let i = 0; i < this.orders.length; i++) {
-          if (!cities.includes(this.orders[i].shipCity)) {
-            cities.push(this.orders[i].shipCity)
+          if (!cities.includes(this.orders[i].order.shipCity)) {
+            cities.push(this.orders[i].order.shipCity)
           }
         }
         this.cities = cities
