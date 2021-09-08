@@ -6,7 +6,7 @@ The application to work need an SQL SERVER DB (the sql file is under src/main/re
 
 for download application: git clone https://github.com/FrancescoPaci/beTest.git
 
-client root: src\main\client\be-digitech-test
+client root: src\main\client\pax-app
 
 Instruction to run application:
   
