@@ -10,13 +10,14 @@ client root: src\main\client\pax-app
 
 Instruction to run application:
   
-  1) install node.js e npm
-  2) launch from cmd: npm install copyfiles -g (questo serve solo per il punto 4b)
+  1) install node.js and npm
+  2) launch from cmd: npm install copyfiles -g (needed only for point 5.2)
   3) from CMD go in client root and launch: npm install
-  4) for 2 server (BE e FE) (developer mode) from client root launch: "npm start"
+  4) make maven clean install of project
+  5.1) for 2 server (BE e FE) (developer mode) from client root launch: "npm start"
      then launch the MAIN that is in java class TestApplication.
      Application respond on url: http://localhost:4200/
-  5) for 1 server (BE) (production mode) from client root launch: "npm run build"
+  5.2) for 1 server (BE) (production mode) from client root launch: "npm run build"
      then launch the MAIN that is in java class TestApplication.
      Application respond on url: http://localhost:8080/
   
