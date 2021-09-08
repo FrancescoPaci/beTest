@@ -11,7 +11,7 @@ client root: src\main\client\pax-app
 Instruction to run application:
   
   1) install node.js and npm
-  2) launch from cmd: npm install copyfiles -g (needed only for point 5.2)
+  2) launch from cmd: npm install copyfiles -g (needed only for point 5B)
   3) from CMD go in client root and launch: npm install
   4) make maven clean install of project
   5) choose A or B:
