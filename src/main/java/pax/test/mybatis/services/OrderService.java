@@ -1,17 +1,17 @@
-package pax.test.services;
+package pax.test.mybatis.services;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pax.test.model.OrderDto;
-import pax.test.model.OrderFilters;
 import pax.test.mybatis.custom.OrdersCustomMapper;
 import pax.test.mybatis.mapper.OrdersDetailsMapper;
 import pax.test.mybatis.mapper.OrdersMapper;
 import pax.test.mybatis.mapper.ProductsMapper;
 import pax.test.mybatis.mapper.ShippersMapper;
 import pax.test.mybatis.model.*;
+import pax.test.springJdbc.model.OrderDto;
+import pax.test.springJdbc.model.OrderFilters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,11 +108,11 @@ public class OrderService {
     }
 
     public List<String> selectColumnById() {
-        return ordersCustomMapper.selectColumnById("Ship_city", 1);
+        return ordersCustomMapper.selectColumnById("ship_city", 1);
     }
 
     public List<String> selectDistinctByColumnFromXml() {
-        return ordersCustomMapper.selectDistinctByColumnFromXml("Ship_Country");
+        return ordersCustomMapper.selectDistinctByColumnFromXml("ship_country");
     }
 
 }

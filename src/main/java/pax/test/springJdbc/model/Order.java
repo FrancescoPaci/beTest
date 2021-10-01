@@ -1,20 +1,25 @@
-package pax.test.model;
+package pax.test.springJdbc.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderFilters extends Pagination {
+public class Order {
 
+    private long id;
+    private String customerName;
     private Date orderDate;
     private String shipCity;
+    private String shipCountry;
     private String shipAddress;
     private String shipPostalCode;
-    private String shipCountry;
-    private String shipper;
+    private Shippers shipper;
+    private List<Product> products;
+
 }

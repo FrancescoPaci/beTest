@@ -1,6 +1,6 @@
 package pax.test.security;
 
-import pax.test.repository.UserRepository;
+import pax.test.springJdbc.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

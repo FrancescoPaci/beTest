@@ -1,4 +1,4 @@
-package pax.test.model;
+package pax.test.springJdbc.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

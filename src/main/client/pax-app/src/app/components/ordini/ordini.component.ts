@@ -23,20 +23,17 @@ export class OrdiniComponent implements OnInit {
     })
   }
 
-  ordersForm
+  ordersForm: any
   orders: any = []
-  ordersFiltered: any = []
   cities: any = []
   shippers: any = []
-  filterColumns: any = ['customerName', 'orderDate', 'shipCity', 'shipAddress', 'shipPostalCode', 'shipCountry', 'shipper']
-  orderObj = { customerName: '', orderDate: '', shipCity: '', shipAddress: '', shipPostalCode: '', shipCountry: '', shipper: '' }
+  filterColumns: any = ['orderDate', 'shipCity', 'shipAddress', 'shipPostalCode', 'shipCountry', 'shipper']
   start = 0
-  end = 10
 
-  siteColor
+  siteColor: string
   fontSize = 14
 
-  currentPage = 1
+  page = 1
   maxSizePagination = 8
   totalItems = 0
   itemsPerPage = 10
@@ -44,52 +41,35 @@ export class OrdiniComponent implements OnInit {
   role = localStorage.getItem('userRole')
   datePattern = /^[\d]{4}-[\d]{2}-[\d]{2}$/
   numberPattern = /^[\d]*$/
+  orderObj = { orderDate: [null, [Validators.pattern(this.datePattern)]], shipCity: '', shipAddress: '', shipPostalCode: '', shipCountry: '', shipper: '' }
 
   ngOnInit(): void {
-    this.getOrders()
-    this.getTotalOrders()
+    this.getOrdersByFilter(true)
     this.getShippers()
   }
 
+  findPlaceHolder(field: string) {
+    if (field === 'orderDate') {
+      return 'yyyy-mm-dd'
+    }
+  }
+
   applyFilters() {
-    let filters = {}
+    this.page = 1
+    this.getOrdersByFilter(true)
+  }
+
+  getOrdersByFilter(makeCount) {
+    let filters = { page: this.page, size: this.itemsPerPage }
     for (var i = 0; i < this.filterColumns.length; i++) {
       filters[this.filterColumns[i]] = this.ordersForm.controls.orderFilters.controls[this.filterColumns[i]].value
     }
-    this.ordersFiltered = this.orders.filter(function (o) {
-      for (var key in filters) {
-        if (filters[key] && o[key]) {
-          if (key === 'shipper') {
-            if (o[key].name.toLowerCase().indexOf(filters[key].toLowerCase()) === -1) {
-              return false
-            }
-          } else if (o[key].toLowerCase().indexOf(filters[key].toLowerCase()) === -1) {
-            return false
-          }
-        }
-      }
-      return true
-    })
-  }
-
-  resetFilters() {
-    this.ordersForm.controls.orderFilters.setValue(this.orderObj)
-    this.ordersFiltered = this.orders
-  }
-
-  setPageActive(event: any, setData): void {
-    this.currentPage = event && event.page ? event.page : (this.currentPage || 1)
-    this.start = (this.currentPage - 1) * this.itemsPerPage + 1
-    this.end = this.currentPage * this.itemsPerPage
-    this.getOrders()
-  }
-
-  getOrders() {
-    let params = '?start=' + this.start + '&end=' + this.end
-    this.httpService.callGet('ordersByRange' + params, "Errore nel reperimento degli ordini").subscribe(
+    if(makeCount){
+      this.getTotalOrders(filters)
+    }
+    this.httpService.callPost('jpa/ordersByRange', filters, "L'ordinamento non è riuscito.").subscribe(
       data => {
         this.orders = data
-        this.ordersFiltered = data
         this.createForm()
         let cities = []
         for (let i = 0; i < this.orders.length; i++) {
@@ -104,8 +84,8 @@ export class OrdiniComponent implements OnInit {
     )
   }
 
-  getTotalOrders() {
-    this.httpService.callGet('ordersCount', "Errore nel reperimento del numero totale di ordini necessario per l'impaginazione").subscribe(
+  getTotalOrders(filters: any) {
+    this.httpService.callPost('jpa/ordersCount', filters, "Non è stato possibile recuperare il numero totale degli ordini").subscribe(
       data => {
         this.totalItems = data as number
       },
@@ -114,8 +94,19 @@ export class OrdiniComponent implements OnInit {
     )
   }
 
+  resetFilters() {
+    this.ordersForm.controls.orderFilters.reset()
+    this.getOrdersByFilter(true)
+  }
+
+  setPageActive(event: any): void {
+    this.page = event && event.page ? event.page : (this.page || 1)
+    this.start = (this.page - 1) * this.itemsPerPage
+    this.getOrdersByFilter(false)
+  }
+
   getShippers() {
-    this.httpService.callGet('getShippers', "Errore nel reperimento degli shippers").subscribe(
+    this.httpService.callGet('jpa/getShippers', "Errore nel reperimento degli shippers").subscribe(
       data => {
         this.shippers = data
       },
@@ -124,35 +115,47 @@ export class OrdiniComponent implements OnInit {
     )
   }
 
-  modifyOrder(order) {
+  modifyOrder(order: any) {
     order.inModifica = true
   }
 
-  cancelModOrder(index) {
+  cancelModOrder(index: number) {
     delete this.orders[index].inModifica
-    this.ordersForm.controls.orderDetails.controls[index].setValue(JSON.parse(JSON.stringify(this.orders[index])))
+    this.fromOrderDtoToFormOrder(this.orders[index], index)
   }
 
-  saveOrder(index) {
-    let order = this.ordersForm.controls.orderDetails.controls[index].value
-    this.httpService.callPost("updateOrder", order, "Il salvataggio dell'ordine non è riuscito").subscribe(
+  fromOrderDtoToFormOrder(order, index) {
+    this.ordersForm.controls.orderDetails.controls[index].setValue({
+      id: order.id,
+      orderDate: order.orderDate,
+      shipCity: order.shipCity,
+      shipAddress: order.shipAddress,
+      shipPostalCode: order.shipPostalCode,
+      shipCountry: order.shipCountry,
+      shipper: order.shipper,
+      orderDetails: order.orderDetails
+    })
+  }
+
+  saveOrder(index: number) {
+    let formOrder = this.ordersForm.controls.orderDetails.controls[index].value
+    this.httpService.callPost("jpa/updateOrder", formOrder, "La modifica dell'ordine non è riuscita.").subscribe(
       data => {
-        this.ordersFiltered[index] = data
-        this.ordersForm.controls.orderDetails.controls[index].setValue(data)
+        this.orders[index] = orderDto
+        this.fromOrderDtoToFormOrder(orderDto, index)
       },
       error => { },
       () => { }
     )
   }
 
-  compareShipper(a, b) {
+  compareShipper(a: any, b: any) {
     return a && b && a.id === b.id;
   }
 
   createForm() {
     this.ordersForm.controls.orderDetails = this.formBuilder.array(
       this.orders.map(x => this.formBuilder.group({
-        customerName: [x.customerName],
         id: [x.id],
         orderDate: [x.orderDate, [Validators.required, Validators.pattern(this.datePattern)]],
         shipCity: [x.shipCity, [Validators.required]],
@@ -160,19 +163,24 @@ export class OrdiniComponent implements OnInit {
         shipPostalCode: [x.shipPostalCode, [Validators.required]],
         shipCountry: [x.shipCountry, [Validators.required]],
         shipper: [x.shipper, [Validators.required]],
-        products: this.formBuilder.array(
-          x.products.map(y => this.formBuilder.group({
-            quantity: [y.quantity, [Validators.required, Validators.pattern(this.numberPattern)]],
-            name: [y.name],
-            id: [y.id]
+        orderDetails: x.orderDetails && this.formBuilder.array(
+          x.orderDetails.map(y => this.formBuilder.group({
+            quantity: [y.quantity, [Validators.required]],
+            discount: [y.discount],
+            product: [y.product]
           })))
       }))
     )
   }
 
-  formInvalid(index) {
+  formInvalid(index: number) {
     return this.ordersForm.controls.orderDetails.controls[index].pristine ||
       this.ordersForm.controls.orderDetails.controls[index].status === 'INVALID'
+  }
+
+  filterInvalid() {
+    return this.ordersForm.controls.orderFilters.pristine ||
+      this.ordersForm.controls.orderFilters.status === 'INVALID'
   }
 
   createExcel() {
@@ -181,21 +189,15 @@ export class OrdiniComponent implements OnInit {
       let excelData = []
       for (var i = 0; i < this.orders.length; i++) {
         let order = this.orders[i]
-        let orderData = [order.customerName, order.orderDate, order.shipCity, order.shipAddress,
-        order.shipPostalCode, order.shipCountry, order.shipper.companyName + " " + order.shipper.phone]
-        let products = []
-        for (var j = 0; j < order.products.length; j++) {
-          let product = order.products[j]
-          products.push(product.quantity + " " + product.name)
-        }
-        orderData.push(products.join(", "))
+        let orderData = [order.orderDate, order.shipCity, order.shipAddress,
+        order.shipPostalCode, order.shipCountry, order.shipper.companyName + " " + order.shipper.phone, JSON.stringify(order.orderDetails)]
         excelData.push(orderData)
       }
       let excelParams = {
         title: 'Ordini',
         data: excelData,
         headers: ['Customer name', 'Order date', 'Ship city', 'Ship address',
-          'Ship postal code', 'Ship country', 'Shipping company', 'Products']
+          'Ship postal code', 'Ship country', 'Shipping company', 'Order details']
       }
       this.excelService.generateExcel(this.excelService.createExcel(excelParams), 'Ordini').then(rs => {
         this.spinner.hide()

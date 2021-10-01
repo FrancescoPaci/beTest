@@ -1,4 +1,4 @@
-package pax.test.model;
+package pax.test.springJdbc.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class Shippers {
 
     private long id;
     private String name;
-    private int quantity;
+    private String phone;
 
 }

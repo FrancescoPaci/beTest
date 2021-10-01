@@ -1,29 +1,28 @@
-package pax.test.controller;
+package pax.test.mybatis.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import pax.test.model.OrderDto;
-import pax.test.model.OrderFilters;
+import org.springframework.web.bind.annotation.*;
 import pax.test.mybatis.model.Shippers;
-import pax.test.services.OrderService;
+import pax.test.mybatis.services.OrderService;
+import pax.test.springJdbc.model.OrderDto;
+import pax.test.springJdbc.model.OrderFilters;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
-public class OrderController implements BasicController {
+@RequestMapping("/api/mybatis")
+public class OrderController {
 
     @Autowired
-    OrderService orderService;
+    private OrderService orderService;
 
-    @PostMapping("/ordersByRangeBE")
+    @PostMapping("/ordersByRange")
     public List<OrderDto> findOrdersByRange(@RequestBody OrderFilters filter) {
         return orderService.findOrdersByRange(filter);
     }
 
-    @PostMapping("/ordersCountBE")
+    @PostMapping("/ordersCount")
     public Long findCountOrders(@RequestBody OrderFilters filter) {
         return orderService.findCountOrders(filter);
     }

@@ -1,4 +1,4 @@
-package pax.test.repository;
+package pax.test.springJdbc.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,12 +11,12 @@ public class UserRepository {
     private JdbcTemplate jdbcTemplate;
 
     public String findUser(String username, String psw) {
-        return jdbcTemplate.queryForObject("SELECT ROLE FROM Users where username = '"+username+"' " +
+        return jdbcTemplate.queryForObject("SELECT role FROM users where username = '"+username+"' " +
                 "AND Password = '"+psw+"'", String.class);
     }
 
     public void insertUser(String username, String psw) {
-        jdbcTemplate.update("INSERT INTO Users (username, Password, Role)\n" +
+        jdbcTemplate.update("INSERT INTO users (username, password, role)\n" +
                 "VALUES ('"+username+"','"+psw+"','USER')");
     }
 }

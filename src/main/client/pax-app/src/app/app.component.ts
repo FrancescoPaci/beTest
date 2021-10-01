@@ -22,8 +22,8 @@ export class AppComponent {
   siteColor = localStorage.getItem("siteColor") || 'white'
   page: string
   pages = [
-    {title: 'Ordini FE', route: '/ordini', roles: ['ADMIN'], disabled: true},
-    {title: 'Ordini BE', route: '/ordiniBe', roles: ['ADMIN']},
+    {title: 'Ordini JPA', route: '/ordini', roles: ['ADMIN']},
+    {title: 'Ordini MyIbatis', route: '/ordiniBe', roles: ['ADMIN']},
     {title: 'Home Page', route: '/homePage', hidden: true},
     {title: 'Login', route: '/loginPage', hidden: true},
     {title: 'Crea Account', route: '/createAccount', hidden: true}

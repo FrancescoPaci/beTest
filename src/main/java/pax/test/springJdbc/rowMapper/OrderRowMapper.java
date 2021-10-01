@@ -1,7 +1,7 @@
-package pax.test.rowMapper;
+package pax.test.springJdbc.rowMapper;
 
-import pax.test.model.Order;
-import pax.test.model.Shippers;
+import pax.test.springJdbc.model.Order;
+import pax.test.springJdbc.model.Shippers;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

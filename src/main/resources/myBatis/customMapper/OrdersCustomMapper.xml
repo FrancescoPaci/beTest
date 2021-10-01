@@ -4,7 +4,7 @@
 <mapper namespace="pax.test.mybatis.custom.OrdersCustomMapper">
 
     <select id="selectDistinctByColumnFromXml" resultType="java.lang.String">
-        SELECT DISTINCT ${column} FROM Orders
+        SELECT DISTINCT ${column} FROM orders
     </select>
 
 </mapper>

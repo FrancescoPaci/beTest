@@ -67,7 +67,7 @@ export class OrdiniBeComponent implements OnInit {
       filters[this.filterColumns[i]] = this.ordersForm.controls.orderFilters.controls[this.filterColumns[i]].value
     }
     this.getTotalOrders(filters)
-    this.httpService.callPost('ordersByRangeBE', filters, "L'ordinamento non è riuscito.").subscribe(
+    this.httpService.callPost('mybatis/ordersByRange', filters, "L'ordinamento non è riuscito.").subscribe(
       data => {
         this.orders = data
         this.createForm()
@@ -85,7 +85,7 @@ export class OrdiniBeComponent implements OnInit {
   }
 
   getTotalOrders(filters: any) {
-    this.httpService.callPost('ordersCountBE', filters, "Non è stato possibile recuperare il numero totale degli ordini").subscribe(
+    this.httpService.callPost('mybatis/ordersCount', filters, "Non è stato possibile recuperare il numero totale degli ordini").subscribe(
       data => {
         this.totalItems = data as number
       },
@@ -106,7 +106,7 @@ export class OrdiniBeComponent implements OnInit {
   }
 
   getShippers() {
-    this.httpService.callGet('getShippers', "Errore nel reperimento degli shippers").subscribe(
+    this.httpService.callGet('mybatis/getShippers', "Errore nel reperimento degli shippers").subscribe(
       data => {
         this.shippers = data
       },
@@ -152,7 +152,7 @@ export class OrdiniBeComponent implements OnInit {
       shipper: formOrder.shipper,
       products: formOrder.products
     }
-    this.httpService.callPost("updateOrder", orderDto, "La modifica dell'ordine non è riuscita.").subscribe(
+    this.httpService.callPost("mybatis/updateOrder", orderDto, "La modifica dell'ordine non è riuscita.").subscribe(
       data => {
         this.orders[index] = orderDto
         this.fromOrderDtoToFormOrder(orderDto, index)
@@ -163,7 +163,7 @@ export class OrdiniBeComponent implements OnInit {
   }
 
   getFilters() { //this method is never used is just a try
-    this.httpService.callGet("selectDistinct", "Errore nel reperimento dei filtri").subscribe(
+    this.httpService.callGet("mybatis/selectDistinct", "Errore nel reperimento dei filtri").subscribe(
       data => {
         let filters = data
       },
