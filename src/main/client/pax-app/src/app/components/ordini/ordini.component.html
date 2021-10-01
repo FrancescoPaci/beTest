@@ -93,7 +93,10 @@
               </td>
               <td formArrayName="orderDetails">
                 <div *ngFor="let orderDetail of order.orderDetails; let j = index" [formGroupName]="j">
+                  <label>Quantità:</label>
                   <input type="number" formControlName="quantity" class="form-control form-control-sm">
+                  <label>Sconto:</label>
+                  <input type="number" formControlName="discount" class="form-control form-control-sm">
                 </div>
               </td>
               <td>

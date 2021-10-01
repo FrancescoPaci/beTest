@@ -1,6 +1,5 @@
 package pax.test.jpa.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,13 +16,15 @@ import java.math.BigDecimal;
 public class JpaOrdersDetails implements Serializable {
 
     @Id
-    @ManyToOne
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
-    @JsonIgnore
     private JpaOrder order;
 
-    @Id
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private JpaProduct product;
 

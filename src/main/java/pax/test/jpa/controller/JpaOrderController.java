@@ -1,10 +1,8 @@
 package pax.test.jpa.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import pax.test.jpa.model.JpaOrder;
-import pax.test.jpa.model.JpaOrdersDetails;
 import pax.test.jpa.model.JpaShipper;
 import pax.test.jpa.services.JpaOrderService;
 import pax.test.springJdbc.model.OrderFilters;
@@ -38,6 +36,5 @@ public class JpaOrderController {
     public void updateOrder(@RequestBody JpaOrder order) {
         JpaOrderService.updateOrderAndProducts(order);
     }
-
 
 }

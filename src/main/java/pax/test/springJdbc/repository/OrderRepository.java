@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import pax.test.springJdbc.model.*;
 import pax.test.mybatis.mapper.OrdersMapper;
 import pax.test.mybatis.mapper.ProductsMapper;
 import pax.test.mybatis.mapper.ShippersMapper;
 import pax.test.mybatis.model.Orders;
+import pax.test.springJdbc.model.*;
 import pax.test.springJdbc.rowMapper.OrderRowMapper;
 
 import java.util.ArrayList;

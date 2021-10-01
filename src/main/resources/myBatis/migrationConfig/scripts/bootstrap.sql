@@ -50,55 +50,55 @@
 -- use the migrations and the changelog for all future
 -- database change management.
 
-CREATE DATABASE frankpax_db;
-
 CREATE TABLE customers (
-	id int AUTO_INCREMENT ,
-	name varchar (30) NOT NULL ,
-	address varchar (60) NULL ,
-	city varchar (15) NULL ,
-	postal_code varchar (10) NULL ,
-	country varchar (15) NULL ,
-	phone varchar (24) NULL ,
+	id int AUTO_INCREMENT,
+	name varchar (30) NOT NULL,
+	address varchar (60) NULL,
+	city varchar (15) NULL,
+	postal_code varchar (10) NULL,
+	country varchar (15) NULL,
+	phone varchar (24) NULL,
 	PRIMARY KEY (id)
 );
 
 CREATE TABLE products (
-	id int AUTO_INCREMENT ,
-	name varchar (40) NOT NULL ,
-	unit_price DECIMAL(13,2) NOT NULL ,
+	id int AUTO_INCREMENT,
+	name varchar (40) NOT NULL,
+	unit_price DECIMAL(13,2) NOT NULL,
 	PRIMARY KEY (id)
 );
 
 CREATE TABLE shippers (
-	id int NOT NULL,
+	id int AUTO_INCREMENT,
 	name varchar (40) NOT NULL,
 	phone varchar (24) NULL,
 	PRIMARY KEY (id)
 );
 
 CREATE TABLE orders (
-	id int AUTO_INCREMENT ,
-	customer_id int NULL ,
-	shipper_id int NULL ,
-	order_date date NULL ,
-	required_date date NULL ,
-	shipped_date date NULL ,
-	ship_address varchar (60) NULL ,
-	ship_city varchar (15) NULL ,
-	ship_postal_code varchar (10) NULL ,
-	ship_country varchar (15) NULL ,
+	id int AUTO_INCREMENT,
+	customer_id int NULL,
+	shipper_id int NULL,
+	order_date date NULL,
+	required_date date NULL,
+	shipped_date date NULL,
+	ship_address varchar (60) NULL,
+	ship_city varchar (15) NULL,
+	ship_postal_code varchar (10) NULL,
+	ship_country varchar (15) NULL,
 	PRIMARY KEY (id),
 	FOREIGN KEY (customer_id) REFERENCES customers(id),
 	FOREIGN KEY (shipper_id) REFERENCES shippers(id)
 );
 
 CREATE TABLE orders_details (
+    id int AUTO_INCREMENT,
 	order_id int NOT NULL,
 	product_id int NOT NULL,
 	quantity int  NOT NULL,
 	discount DECIMAL(5,2),
-	CONSTRAINT pk_orders_details PRIMARY KEY (order_id, product_id),
+	PRIMARY KEY (id),
+	CONSTRAINT unique_orders_details UNIQUE (order_id, product_id),
 	FOREIGN KEY (order_id) REFERENCES orders(id),
 	FOREIGN KEY (product_id) REFERENCES products(id)
 );
@@ -138,9 +138,9 @@ INSERT INTO products(name,unit_price) VALUES('Genen Shouyu', 88.44);
 INSERT INTO products(name,unit_price) VALUES('Teatime Chocolate Biscuits', 55.44);
 INSERT INTO products(name,unit_price) VALUES('Sir Rodney''s Marmalade', 78.99);
 
-INSERT INTO shippers(id,name,phone) VALUES(1,'Speedy Express','(503) 555-9831');
-INSERT INTO shippers(id,name,phone) VALUES(2,'United Package','(503) 555-3199');
-INSERT INTO shippers(id,name,phone) VALUES(3,'Federal Shipping','(503) 555-9931');
+INSERT INTO shippers(name,phone) VALUES('Speedy Express','(503) 555-9831');
+INSERT INTO shippers(name,phone) VALUES('United Package','(503) 555-3199');
+INSERT INTO shippers(name,phone) VALUES('Federal Shipping','(503) 555-9931');
 
 INSERT INTO orders (customer_id,shipper_id,order_date,required_date,shipped_date,ship_address,ship_city,ship_postal_code,ship_country)
 VALUES (1,2,'1996-04-07','1996-05-06','1996-06-09','59 rue de l''Abbaye','Reims','51100','France');

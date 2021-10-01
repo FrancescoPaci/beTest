@@ -64,7 +64,7 @@ export class OrdiniComponent implements OnInit {
     for (var i = 0; i < this.filterColumns.length; i++) {
       filters[this.filterColumns[i]] = this.ordersForm.controls.orderFilters.controls[this.filterColumns[i]].value
     }
-    if(makeCount){
+    if (makeCount) {
       this.getTotalOrders(filters)
     }
     this.httpService.callPost('jpa/ordersByRange', filters, "L'ordinamento non è riuscito.").subscribe(
@@ -138,11 +138,10 @@ export class OrdiniComponent implements OnInit {
   }
 
   saveOrder(index: number) {
-    let formOrder = this.ordersForm.controls.orderDetails.controls[index].value
+    var formOrder = this.ordersForm.controls.orderDetails.controls[index].value
     this.httpService.callPost("jpa/updateOrder", formOrder, "La modifica dell'ordine non è riuscita.").subscribe(
       data => {
-        this.orders[index] = orderDto
-        this.fromOrderDtoToFormOrder(orderDto, index)
+        this.orders[index] = formOrder
       },
       error => { },
       () => { }
@@ -165,6 +164,8 @@ export class OrdiniComponent implements OnInit {
         shipper: [x.shipper, [Validators.required]],
         orderDetails: x.orderDetails && this.formBuilder.array(
           x.orderDetails.map(y => this.formBuilder.group({
+            id: [y.id],
+            order: [y.order],
             quantity: [y.quantity, [Validators.required]],
             discount: [y.discount],
             product: [y.product]

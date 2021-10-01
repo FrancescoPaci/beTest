@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pax.test.jpa.model.JpaOrder;
 import pax.test.jpa.model.JpaShipper;
+import pax.test.jpa.repository.JpaOrderDetailsRepository;
 import pax.test.jpa.repository.JpaOrderRepository;
 import pax.test.jpa.repository.JpaShipperRepository;
-import pax.test.mybatis.model.Products;
 import pax.test.springJdbc.model.OrderFilters;
 
 import javax.persistence.EntityManager;
@@ -25,6 +25,8 @@ public class JpaOrderService {
     JpaOrderRepository jpaOrderRepository;
     @Autowired
     JpaShipperRepository jpaShipperRepository;
+    @Autowired
+    JpaOrderDetailsRepository jpaOrderDetailsRepository;
     @PersistenceContext
     EntityManager entityManager;
 
@@ -75,7 +77,7 @@ public class JpaOrderService {
 
     @Transactional(rollbackFor = Exception.class)
     public void updateOrderAndProducts(JpaOrder order){
-        jpaOrderRepository.save(order);
+        jpaOrderDetailsRepository.saveAll(order.getOrderDetails());
     }
 
 }
