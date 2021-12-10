@@ -13,13 +13,13 @@ export class AppComponent {
    router.events.subscribe((val) => {
       if(val instanceof NavigationEnd){
         this.page = this.pages.find(function (o) { return o.route == router.url }).title
-        this.role = localStorage.getItem('userRole')
+        this.role = sessionStorage.getItem('userRole')
       }
     });
   }
 
   role: string
-  siteColor = localStorage.getItem("siteColor") || 'white'
+  siteColor = sessionStorage.getItem("siteColor") || 'white'
   page: string
   pages = [
     {title: 'Ordini JPA', route: '/ordini', roles: ['ADMIN']},
@@ -32,19 +32,19 @@ export class AppComponent {
   ngOnInit(){}
 
   setDarkSite(){
-    var siteColor = localStorage.getItem("siteColor")
+    var siteColor = sessionStorage.getItem("siteColor")
     if(!siteColor || siteColor === "white"){
-      localStorage.setItem("siteColor", "dark")
+      sessionStorage.setItem("siteColor", "dark")
       this.siteColor = "dark"
     } else if(siteColor === "dark"){
-      localStorage.setItem("siteColor", "white")
+      sessionStorage.setItem("siteColor", "white")
       this.siteColor = "white"
     }
   }
 
   logout(){
-    localStorage.removeItem('auth')
-    localStorage.removeItem('userRole')
+    sessionStorage.removeItem('auth')
+    sessionStorage.removeItem('userRole')
     this.router.navigate(['loginPage'])
   }
 

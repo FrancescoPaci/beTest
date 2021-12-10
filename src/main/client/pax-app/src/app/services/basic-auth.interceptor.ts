@@ -12,7 +12,7 @@ export class BasicAuthInterceptor implements HttpInterceptor {
     if(request.url.startsWith("/api/")){
       request = request.clone({
         setHeaders: {
-          Authorization: 'Basic ' + localStorage.getItem('auth')
+          Authorization: 'Basic ' + sessionStorage.getItem('auth')
         }
       })
     }

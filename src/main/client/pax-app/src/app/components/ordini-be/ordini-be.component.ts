@@ -14,7 +14,7 @@ export class OrdiniBeComponent implements OnInit {
   constructor(private httpService: HttpService, private formBuilder: FormBuilder,
     public excelService: ExcelService, private spinner: NgxSpinnerService) {
     setInterval(() => {
-      this.siteColor = localStorage.getItem("siteColor")
+      this.siteColor = sessionStorage.getItem("siteColor")
     }, 10)
 
     this.ordersForm = this.formBuilder.group({
@@ -38,7 +38,7 @@ export class OrdiniBeComponent implements OnInit {
   totalItems = 0
   itemsPerPage = 10
 
-  role = localStorage.getItem('userRole')
+  role = sessionStorage.getItem('userRole')
   datePattern = /^[\d]{4}-[\d]{2}-[\d]{2}$/
   numberPattern = /^[\d]*$/
   orderObj = { orderDate: [null, [Validators.pattern(this.datePattern)]], shipCity: '', shipAddress: '', shipPostalCode: '', shipCountry: '', shipper: '' }

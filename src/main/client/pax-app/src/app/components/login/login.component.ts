@@ -18,11 +18,11 @@ export class LoginComponent implements OnInit {
 
   login() {
     if (this.model.username && this.model.password) {
-      localStorage.setItem('auth', window.btoa(this.model.username + ":" + this.model.password))
+      sessionStorage.setItem('auth', window.btoa(this.model.username + ":" + this.model.password))
       this.httpService.callGet('login', "Errore in fase di login").subscribe(
         data => {
-          this.sendMail()
-          localStorage.setItem('userRole', data[0].authority)
+          //this.sendMail()
+          sessionStorage.setItem('userRole', data[0].authority)
           this.router.navigate(['ordiniBe'])
           this.errMsg = ""
         },

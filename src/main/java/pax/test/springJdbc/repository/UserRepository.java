@@ -11,8 +11,12 @@ public class UserRepository {
     private JdbcTemplate jdbcTemplate;
 
     public String findUser(String username, String psw) {
-        return jdbcTemplate.queryForObject("SELECT role FROM users where username = '"+username+"' " +
-                "AND Password = '"+psw+"'", String.class);
+        try {
+            return jdbcTemplate.queryForObject("SELECT role FROM users where username = '" + username + "' " +
+                    "AND Password = '" + psw + "'", String.class);
+        } catch(Exception e){
+            return null;
+        }
     }
 
     public void insertUser(String username, String psw) {

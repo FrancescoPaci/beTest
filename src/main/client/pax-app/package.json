@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve --proxy-config proxy-config.json",
     "build": "ng build",
+    "buildProd": "ng build --prod",
     "postbuild": "npm run deploy",
     "predeploy": "rimraf ../../resources/static/ && mkdirp ../../resources/static",
     "deploy": "copyfiles -f dist/** ../../resources/static",

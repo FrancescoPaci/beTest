@@ -8,7 +8,7 @@ export class RouteGuardService implements CanActivate {
   constructor(private router: Router, private httpService: HttpService) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if(localStorage.getItem('auth')){
+    if(sessionStorage.getItem('auth')){
       return true
     }
     this.router.navigate(['loginPage'])
