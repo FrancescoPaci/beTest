@@ -212,15 +212,17 @@ export class OrdiniBeComponent implements OnInit {
       let excelData = []
       for (var i = 0; i < this.orders.length; i++) {
         let order = this.orders[i]
-        let orderData = [order.orderDate, order.shipCity, order.shipAddress,
-        order.shipPostalCode, order.shipCountry, order.shipper.companyName + " " + order.shipper.phone]
+        let orderData = [order.order.orderDate, order.order.shipCity, order.order.shipAddress,
+        order.order.shipPostalCode, order.order.shipCountry, order.shipper.name + " " + order.shipper.phone]
         let products = []
-        for (var j = 0; j < order.products.length; j++) {
-          let product = order.products[j]
-          products.push(product.quantity + " " + product.name)
+        if(order.products && order.products.length) {
+          for (var j = 0; j < order.products.length; j++) {
+            let product = order.products[j]
+            products.push(product.quantity + " " + product.name)
+          }
+          orderData.push(products.join(", "))
+          excelData.push(orderData)
         }
-        orderData.push(products.join(", "))
-        excelData.push(orderData)
       }
       let excelParams = {
         title: 'Ordini',
